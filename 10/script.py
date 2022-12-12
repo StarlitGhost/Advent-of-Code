@@ -9,6 +9,13 @@ X = 1
 instr = 'noop'
 operand = 0
 sum_signals = 0
+crt = []
+for _ in range(0,6):
+    crt.append(['.']*40)
+
+def print_crt():
+    for line in crt:
+        print(''.join(map(str, line)))
 
 while True:
     if instr_cycles == 0:
@@ -31,3 +38,7 @@ while True:
     if (cycle - 20) % 40 == 0:
         sum_signals += cycle * X
         print(cycle, cycle * X, sum_signals)
+
+    crt[(cycle-1)//40][(cycle-1)%40] = '#' if X-1 <= (cycle-1)%40 <= X+1 else '.'
+
+print_crt()
