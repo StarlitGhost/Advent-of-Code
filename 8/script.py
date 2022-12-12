@@ -1,11 +1,15 @@
+import math
+
 with open('input') as f:
     inputs = (line.rstrip('\n') for line in f)
 
     forest = []
     visibility = []
+    scenic = []
     for line in inputs:
         forest.append([int(tree) for tree in line])
         visibility.append([0 for tree in line])
+        scenic.append([0 for tree in line])
 
     def cast_ray(direction, start, forest, visibility):
         height = -1
@@ -38,6 +42,35 @@ with open('input') as f:
 
     cast_rays(forest, visibility)
 
-    #for line in visibility:
-    #    print(''.join(map(str, line)))
+    def print_map(map_):
+        for line in map_:
+            print(''.join(map(str, line)))
+
+    #print_map(visibility)
     print(sum(map(sum, visibility)))
+
+    def scenic_distance(x, y, d):
+        distance = 0
+        cur_x = x+d[0]
+        cur_y = y+d[1]
+        while 0 <= cur_x < len(forest[0]) and 0 <= cur_y < len(forest):
+            distance += 1
+            if forest[x][y] <= forest[cur_x][cur_y]:
+                break
+            cur_x += d[0]
+            cur_y += d[1]
+        return distance
+
+    def cast_scenic_rays(x, y):
+        sd = []
+        for d in [(-1,0), (1,0), (0,-1), (0,1)]:
+            sd.append(scenic_distance(x, y, d))
+        return sd
+
+    max_scenic = 0
+    for y in range(0, len(forest)):
+        for x in range(0, len(forest[y])):
+            scenic[y][x] = cast_scenic_rays(x, y)
+            if math.prod(scenic[y][x]) > max_scenic:
+                max_scenic = math.prod(scenic[y][x])
+                print(x, y, scenic[y][x], max_scenic)
