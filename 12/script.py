@@ -86,6 +86,11 @@ class Terrain:
         x2, y2 = end.tuple()
         return abs(x1 - x2) + abs(y1 - y2)
 
+    def invert(self):
+        for row in self.cells:
+            for cell in row:
+                cell.height = 25 - cell.height
+
 
 terrain = Terrain(inputs)
 print(terrain)
@@ -108,7 +113,7 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.queue)[1]
 
-def a_star(terrain, start, end):
+def a_star(terrain, start, end, early_out = None):
     frontier = PriorityQueue()
     frontier.put(start, 0)
     came_from = {}
@@ -122,6 +127,9 @@ def a_star(terrain, start, end):
         if current_cell == end:
             break
 
+        if early_out and early_out(current_cell):
+            break
+
         for next_cell in terrain.neighbours(current_cell):
             new_cost = cost_so_far[current_cell] + terrain.cost(current_cell, next_cell)
 
@@ -131,7 +139,7 @@ def a_star(terrain, start, end):
                 frontier.put(next_cell, priority)
                 came_from[next_cell] = current_cell
 
-    return came_from, cost_so_far
+    return came_from, cost_so_far, current_cell
 
 def reconstruct_path(came_from, start, end):
     current_cell = end
@@ -147,9 +155,24 @@ def reconstruct_path(came_from, start, end):
     path.reverse()
     return path
 
-came_from, cost_so_far = a_star(terrain, start, end)
+came_from, cost_so_far, _ = a_star(terrain, start, end)
 path = reconstruct_path(came_from, start, end)
-#print([cell.tuple() for cell in path])
 
 print(terrain.draw_with_path(path))
-print(len(path) - 1)
+print(len(path)-1)
+
+from itertools import chain
+
+starts = list(chain.from_iterable(terrain.cells))
+starts = (cell for cell in starts if cell.height == 0)
+shortest = None
+shortest_path = []
+for start in starts:
+    came_from, cost_so_far, _ = a_star(terrain, start, end)
+    path = reconstruct_path(came_from, start, end)
+    if not shortest or (path and len(path) < shortest):
+        shortest = len(path)
+        shortest_path = path
+
+print(terrain.draw_with_path(shortest_path))
+print(len(shortest_path)-1)
