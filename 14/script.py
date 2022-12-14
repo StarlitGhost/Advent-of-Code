@@ -31,6 +31,8 @@ class Grid:
         self.grid = [[0 for x in range(self.width)] for y in range(self.height)]
 
         self.build_walls()
+        
+        self.expands = False
 
         #self.grid[0][500-self.left] = 3
 
@@ -70,6 +72,14 @@ class Grid:
 
     def cell(self, coord):
         x, y = coord
+
+        if self.expands:
+            if x < 0:
+                self.expand_left()
+                x += 1
+            elif x >= self.width:
+                self.expand_right()
+
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.grid[y][x]
         else:
@@ -84,6 +94,31 @@ class Grid:
 
     def write_sand(self, x, y):
         self.grid[y - self.up][x - self.left] = 2
+
+    def count_sand(self):
+        return sum(row.count(2) for row in self.grid)
+
+    def clean(self):
+        self.grid = [[0 if c == 2 else c for c in row] for row in self.grid]
+
+    def add_floor(self):
+        self.grid.append([0 for x in range(self.width)])
+        self.grid.append([1 for x in range(self.width)])
+        self.height += 2
+
+    def expand_left(self):
+        for row in self.grid:
+            row.insert(0, 0)
+        self.grid[-1][0] = 1
+        self.width += 1
+        self.left -= 1
+
+    def expand_right(self):
+        for row in self.grid:
+            row.append(0)
+        self.grid[-1][-1] = 1
+        self.width += 1
+        self.right += 1
 
 
 grid = Grid(inputs)
@@ -106,6 +141,8 @@ def simulate():
         falling, x, y = step(x, y)
         if falling == False:
             grid.write_sand(x, y)
+            if (x, y) == (500, 0):
+                return False
             x, y = 500, 0
             return True
         elif falling is None:
@@ -114,6 +151,16 @@ def simulate():
 while simulate():
     pass
 
-print(grid)
+#print(grid)
 
-print(sum(row.count(2) for row in grid.grid))
+print(grid.count_sand())
+
+grid.clean()
+grid.add_floor()
+grid.expands = True
+
+while simulate():
+    pass
+
+#print(grid)
+print(grid.count_sand())
