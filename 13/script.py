@@ -59,7 +59,7 @@ def compare(left, right, indent=0):
             print(f'{indent_s(indent+1)}- Right side ran out of items, so inputs are not in the right order')
             return False
 
-    if indent == 0:
+    if indent == 0 or len(left) < len(right):
         print(f'{indent_s(indent+1)}- Left side ran out of items, so inputs are in the right order')
         return True
 
@@ -67,7 +67,7 @@ valid_pairs = []
 for idx, pair in enumerate(pairs):
     one, two = pair
     print(f'== Pair {idx+1} ==')
-    if compare(one, two):
+    if compare(one, two) in [True, None]:
         valid_pairs.append(idx+1)
     print()
 
