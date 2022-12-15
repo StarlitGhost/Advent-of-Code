@@ -63,14 +63,21 @@ if __name__ == '__main__':
         beacon = (int(beacon[0]), int(beacon[1]))
         pairs.append((sensor, beacon))
 
+    from timeit import default_timer as timer
+    start = timer()
+
     beacons = set(b for _, b in pairs)
     intersections = scan(int(sys.argv[2]), pairs)
     covered = row_coverage(intersections)
     covered -= beacons
 
-    print('part 1:', len(covered))
+    end = timer()
+
+    print(f'part 1: {len(covered)} {end-start:.6f} seconds')
 
     max_coord = int(sys.argv[3])
+
+    start = timer()
 
     for y in range(0,max_coord+1):
         intersections = scan(y, pairs)
@@ -82,5 +89,6 @@ if __name__ == '__main__':
                     no_intersections = False
                     x = i[1][0] + 1
             if no_intersections:
-                print('part 2:', (x,y), x*4000000 + y)
+                end = timer()
+                print(f'part 2: {(x,y)} {x*4000000 + y} {end-start:.6f} seconds')
                 exit()
