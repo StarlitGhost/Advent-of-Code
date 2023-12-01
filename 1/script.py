@@ -4,15 +4,15 @@ if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
     # that sure was some awkward bullshit for day 1
-    m = {'one': 'one1one',
-        'two': 'two2two',
-        'three': 'three3three',
-        'four': 'four4four',
-        'five': 'five5five',
-        'six': 'six6six',
-        'seven': 'seven7seven',
-        'eight': 'eight8eight',
-        'nine': 'nine9nine'}
+    m = {'one': 'o1ne',
+        'two': 't2wo',
+        'three': 't3hree',
+        'four': 'f4our',
+        'five': 'f5ive',
+        'six': 's6ix',
+        'seven': 's7even',
+        'eight': 'e8ight',
+        'nine': 'n9ine'}
 
     sum = 0
     for i in inputs:
