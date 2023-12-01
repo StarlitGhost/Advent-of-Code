@@ -2,9 +2,9 @@ import sys
 import re
 
 if __name__ == '__main__':
-    inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
+    inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
 
-    def nice(s):
+    def p1_nice(s):
         if any(bad in s for bad in ['ab', 'cd', 'pq', 'xy']):
             #print('bad substr:', s)
             return False
@@ -17,5 +17,18 @@ if __name__ == '__main__':
         else:
             return True
 
-    nice_strings = sum(1 for s in inputs if nice(s))
-    print(nice_strings)
+    def p2_nice(s):
+        if not re.search(r'(\w\w)\w*\1', s):
+            #print('no pairs:', s)
+            return False
+        elif not re.search(r'(\w)\w\1', s):
+            #print('no x_x:', s)
+            return False
+        else:
+            return True
+
+    p1_sum = sum(1 for s in inputs if p1_nice(s))
+    print(p1_sum)
+
+    p2_sum = sum(1 for s in inputs if p2_nice(s))
+    print(p2_sum)
