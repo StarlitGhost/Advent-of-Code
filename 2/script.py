@@ -15,7 +15,7 @@ if __name__ == '__main__':
         game_id = int(g[0].split(' ')[1])
         rounds = g[1].split('; ')
 
-        print(game, '->', game_id, rounds)
+        #print(game, '->', game_id, rounds)
 
         for game_round in rounds:
             cubes = game_round.strip().split(', ')
