@@ -50,14 +50,21 @@ def process(line):
                 return True
     return False
 
+def simulate(circuit, wires):
+    while True:
+        wires_done = len(wires)
+        for index, line in enumerate(circuit):
+            if line[3] not in wires:
+                process(line)
+        if len(wires) == wires_done:
+            break
+
+    return wires
 
 if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
     circuit = []
-    gates = {}
-    wires = {}
-    values = {}
 
     for line in inputs:
         instr, output = line.split(' -> ')
@@ -79,19 +86,17 @@ if __name__ == '__main__':
 
         circuit.append((l, op, r, output))
 
-    while True:
-        to_remove = []
-        if not circuit:
-            break
-        for index, line in enumerate(circuit):
-            if process(line):
-                to_remove.append(index)
-            if 'a' in wires:
-                print(wires['a'])
-                exit(0)
+    wires = {}
+    wires = simulate(circuit, wires)
 
-        for index in reversed(to_remove):
-            del circuit[index]
+    #for k, v in sorted(wires.items()):
+    #    print(f'{k}: {v}')
 
-    for k, v in sorted(wires.items()):
-        print(f'{k}: {v}')
+    print(f"a: {wires['a']}")
+
+    a = wires['a']
+    wires = {}
+    wires['b'] = a
+
+    wires = simulate(circuit, wires)
+    print(f"a: {wires['a']}")
