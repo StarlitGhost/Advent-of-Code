@@ -11,14 +11,14 @@ if __name__ == '__main__':
         cols = {'red': 0, 'green': 0, 'blue': 0}
         skip = False
 
-        g = game.split(':')
+        g = game.split(': ')
         game_id = int(g[0].split(' ')[1])
         rounds = g[1].split('; ')
 
         #print(game, '->', game_id, rounds)
 
         for game_round in rounds:
-            cubes = game_round.strip().split(', ')
+            cubes = game_round.split(', ')
 
             for cube in cubes:
                 cube = cube.split(' ')
