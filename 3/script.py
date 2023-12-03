@@ -51,6 +51,8 @@ if __name__ == '__main__':
     inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
 
     grid = [[c for c in line] for line in inputs]
+
+    # convert numbers in the grid into ints
     for y in range(len(grid)):
         num = ''
         for x in range(len(grid[y])):
@@ -65,7 +67,8 @@ if __name__ == '__main__':
             for c in range(len(num)):
                 grid[y][len(grid[y])-c-1] = int(num)
             num = ''
-                
+        
+    # p1
     parts = []
     for y in range(len(grid)):
         searching = True
@@ -84,6 +87,7 @@ if __name__ == '__main__':
 
     print(sum(parts))
 
+    # p2
     gear_sum = 0
     for y in range(len(grid)):
         for x in range(len(grid[y])):
