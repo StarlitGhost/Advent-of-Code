@@ -63,6 +63,7 @@ if __name__ == '__main__':
                     for c in range(len(num)):
                         grid[y][x-c-1] = int(num)
                     num = ''
+        # handle numbers on the end of a row
         if num:
             for c in range(len(num)):
                 grid[y][len(grid[y])-c-1] = int(num)
