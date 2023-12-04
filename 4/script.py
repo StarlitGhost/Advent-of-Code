@@ -10,10 +10,8 @@ if __name__ == '__main__':
 
     for num, card in enumerate(inputs):
         win, have = card.split(' | ')
-        win = re.split(r'\s+', win.split(': ')[1])
-        win = [w for w in win if w]
-        have = re.split(r'\s+', have)
-        have = [h for h in have if h]
+        win = win.split(': ')[1].split()
+        have = have.split()
 
         # p1
         score = 0
