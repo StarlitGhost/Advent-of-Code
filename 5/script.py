@@ -2,48 +2,95 @@ import sys
 
 
 class Mapping:
-    def __init__(self, inputs):
-        self.name = next(inputs)
+    def __init__(self, mapping):
+        lines = mapping.split('\n')
+        name = lines.pop(0).split()[0]
+        self.src_name, _, self.dst_name = name.split('-')
         self.ranges = []
-        reading = True
-        while True:
-            r = next(inputs)
-            if not r:
-                return
-            else:
-                self.ranges.append([int(num) for num in r.split()])
+        for line in lines:
+            dst_start, src_start, length = map(int, line.split())
+            self.ranges.append((src_start, dst_start, length))
+        self.ranges.sort()
+        #print(name, self.ranges)
 
     def __repr__(self):
         return str(self.__dict__)
 
-    def map(self, source):
+    def map_naive(self, source):
         for r in self.ranges:
-            if r[1] <= source <= r[1] + r[2]:
-                return source-r[1]+r[0]
+            if r[0] <= source < r[0] + r[2]:
+                return source-r[0]+r[1]
         return source
+
 
 def read_mappings(inputs):
     mappings = []
 
-    try:
-        while True:
-            mappings.append(Mapping(inputs))
-    except StopIteration:
-        return mappings
+    for mapping in inputs:
+        mappings.append(Mapping(mapping))
+    return mappings
 
 def process_mappings(seed, mappings):
     conversions = [seed]
     for mapping in mappings:
-        seed = mapping.map(seed)
+        seed = mapping.map_naive(seed)
         conversions.append(seed)
     #print(seed, conversions)
     return seed
 
-if __name__ == '__main__':
-    inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
+def process_ranges(seed_ranges, mappings):
+    positions = sorted(seed_ranges)
 
-    seeds = [int(s) for s in next(inputs).lstrip('seeds: ').split()]
-    next(inputs)
+    for mapping in mappings:
+        ranges = list(mapping.ranges)
+        new_positions = []
+
+        while positions and ranges:
+            pos_start, pos_len = positions[0]
+            src_start, dst_start, range_len = ranges[0]
+            pos_end = pos_start + pos_len
+            src_end = src_start + range_len
+
+            # before range, pass through
+            if pos_end <= src_start:
+                new_positions.append((pos_start, pos_len))
+                positions.pop(0)
+                continue
+            # overlap range start, split
+            if pos_start < src_start:
+                new_len = src_start - pos_start
+                new_positions.append((pos_start, new_len))
+                positions[0] = (src_start, pos_len - new_len)
+                continue
+            # inside range, do mapping
+            if pos_end <= src_end:
+                new_positions.append((dst_start + pos_start - src_start, pos_len))
+                positions.pop(0)
+                continue
+            # overlap range end, split and do mapping
+            if pos_start < src_end:
+                new_len = src_end - pos_start
+                new_positions.append((dst_start + pos_start - src_start, new_len))
+                positions[0] = (src_end, pos_len - new_len)
+                continue
+
+            # after range, skip
+            ranges.pop(0)
+
+        new_positions += positions
+
+        new_positions.sort()
+        positions = new_positions
+
+    return positions
+
+
+if __name__ == '__main__':
+    inputs = open(sys.argv[1]).read().strip().split('\n\n')
+
+    seeds = list(map(int, inputs.pop(0).split()[1:]))
+    s = iter(seeds)
+    seed_ranges = zip(s, s)
 
     mappings = read_mappings(inputs)
     locations = []
@@ -51,11 +98,6 @@ if __name__ == '__main__':
         locations.append(process_mappings(seed, mappings))
     print(min(locations))
 
-    lowest_location = None
-    for i in range(0, len(seeds), 2):
-        for seed in range(seeds[i], seeds[i]+seeds[i+1]):
-            loc = process_mappings(seed, mappings)
-            if lowest_location is None or loc < lowest_location:
-                lowest_location = loc
-    print(lowest_location)
+    positions = process_ranges(seed_ranges, mappings)
+    print(min(start for start, _ in positions))
 
