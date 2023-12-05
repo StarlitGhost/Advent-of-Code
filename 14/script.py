@@ -2,17 +2,29 @@ import sys
 from pprint import pprint
 
 
-def simulate(reindeer, race_time):
-    dist_per_rest = reindeer['speed'] * reindeer['duration']
-    seconds_per_rest = reindeer['duration'] + reindeer['rest']
-    remainder = race_time % seconds_per_rest
-    cycles = race_time // seconds_per_rest
-    distance = dist_per_rest * cycles
-    if remainder < reindeer['duration']:
-        distance += reindeer['speed'] * remainder
-    else:
-        distance += dist_per_rest
-    return distance
+def calculate(reindeer, race_time):
+    distances = {}
+    for name, stats in reindeer.items():
+        dist_per_rest = stats['speed'] * stats['duration']
+        seconds_per_rest = stats['duration'] + stats['rest']
+        remainder = race_time % seconds_per_rest
+        cycles = race_time // seconds_per_rest
+        distances[name] = dist_per_rest * cycles
+        if remainder < stats['duration']:
+            distances[name] += stats['speed'] * remainder
+        else:
+            distances[name] += dist_per_rest
+    return distances
+
+def score(reindeer, race_time):
+    scores = {name: 0 for name in reindeer}
+    for second in range(1, race_time):
+        distances = calculate(reindeer, second)
+        furthest = max(distances.values())
+        furthest = [name for name, dist in distances.items() if dist == furthest]
+        for name in furthest:
+            scores[name] += 1
+    return scores
 
 
 if __name__ == '__main__':
@@ -28,8 +40,14 @@ if __name__ == '__main__':
                           'duration': int(duration),
                           'rest': int(rest)}
 
-    distances = {}
-    for deer in reindeer:
-        distances[deer] = simulate(reindeer[deer], 2503)
+    race_time = 2503
+
+    # p1
+    distances = calculate(reindeer, race_time)
     #pprint(distances)
     print(max(distances.values()))
+
+    # p2
+    scores = score(reindeer, race_time)
+    #pprint(scores)
+    print(max(scores.values()))
