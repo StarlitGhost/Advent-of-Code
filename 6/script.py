@@ -26,5 +26,4 @@ if __name__ == '__main__':
     time = int(''.join(inputs[0].split()[1:]))
     distance = int(''.join(inputs[1].split()[1:]))
     races = [(time, distance)]
-    hold_winners = calc_holds(races)
     print(prod(calc_holds(races)))
