@@ -15,23 +15,15 @@ def type_rank(cards, jokers=False):
             # the max card count *is* J, so add to the second highest count instead
             j = c['J']
             del c['J']
-            c[sorted(c, key=c.get)[-1]] += j
+            c[max(c, key=c.get)] += j
 
-    match sorted(c.values(), reverse=True):
-        case [5]: # five of a kind
-            return 6
-        case [4,1]: # four of a kind
-            return 5
-        case [3,2]: # full house
-            return 4
-        case [3,1,1]: # three of a kind
-            return 3
-        case [2,2,1]: # two pair
-            return 2
-        case [2,1,1,1]: # one pair
-            return 1
-        case [1,1,1,1,1]: # high card
-            return 0
+    return [[1,1,1,1,1],
+            [2,1,1,1],
+            [2,2,1],
+            [3,1,1],
+            [3,2],
+            [4,1],
+            [5]].index(sorted(c.values(), reverse=True))
 
 def convert_card(card):
     return '23456789TJQKA'.index(card)
