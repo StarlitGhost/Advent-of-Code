@@ -56,9 +56,8 @@ if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
     hands = [{'cards': line[0], 'bet': int(line[1])} for line in map(str.split, inputs)]
-    hands.sort(key=rank_hand)
-    #print(hands)
 
+    hands.sort(key=rank_hand)
     print(sum((i+1)*hand['bet'] for i, hand in enumerate(hands)))
 
     hands.sort(key=rank_hand_jokers)
