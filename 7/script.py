@@ -17,13 +17,14 @@ def type_rank(cards, jokers=False):
             del c['J']
             c[max(c, key=c.get)] += j
 
-    return [[1,1,1,1,1],
-            [2,1,1,1],
-            [2,2,1],
-            [3,1,1],
-            [3,2],
-            [4,1],
-            [5]].index(sorted(c.values(), reverse=True))
+    return [[1,1,1,1,1], # high card
+            [2,1,1,1], # one pair
+            [2,2,1], # two pair
+            [3,1,1], # three of a kind
+            [3,2], # full house
+            [4,1], # four of a kind
+            [5] # five of a kind
+            ].index(sorted(c.values(), reverse=True))
 
 def convert_card(card):
     return '23456789TJQKA'.index(card)
