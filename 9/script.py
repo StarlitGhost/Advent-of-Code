@@ -1,7 +1,7 @@
 import sys
 
 if __name__ == '__main__':
-    inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
+    inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
     def extrapolate(sequence):
         # d = derivative sequences
