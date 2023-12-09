@@ -12,14 +12,7 @@ if __name__ == '__main__':
             e.pop(-1)
         return e[-1][-1]
 
-    extrapolated = []
-    for line in inputs:
-        values = list(map(int, line.split()))
-        extrapolated.append(extrapolate(values))
-    print(sum(extrapolated))
+    values = [list(map(int, line.split())) for line in inputs]
 
-    extrapolated = []
-    for line in inputs:
-        values = list(map(int, line.split()))
-        extrapolated.append(extrapolate(list(reversed(values))))
-    print(sum(extrapolated))
+    print(sum(extrapolate(v) for v in values))
+    print(sum(extrapolate(list(reversed(v))) for v in values))
