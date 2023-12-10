@@ -90,6 +90,7 @@ if __name__ == '__main__':
             return False
         return True
 
+    # combined-scan-and-fill span filler from https://en.wikipedia.org/wiki/Flood_fill#Span_filling
     def flood_fill(grid, pos, fill, path, inside=inside):
         if not inside(grid, pos, fill, path):
             return
