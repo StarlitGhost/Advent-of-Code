@@ -28,16 +28,6 @@ def expansion_rows_cols(grid):
     expand_columns = [x for x, col in enumerate(zip(*grid)) if all(y == '.' for y in col)]
     return expand_rows, expand_columns
 
-def expand_space(grid, rows, cols, amount=1):
-    for row in reversed(rows):
-        for n in range(amount):
-            grid.insert(row, grid[row][:])
-
-    for col in reversed(cols):
-        for row in grid:
-            for n in range(amount):
-                row.insert(col, '.')
-
 def find_galaxies(grid):
     galaxies = []
     for y, row in enumerate(grid):
@@ -45,10 +35,6 @@ def find_galaxies(grid):
             if galaxy == '#':
                 galaxies.append((x,y))
     return galaxies
-
-def find_distances(galaxies):
-    distances = [mh_distance(pair[0], pair[1]) for pair in itertools.combinations(galaxies, 2)]
-    return distances
 
 def find_distances_expanded(galaxies, rows, cols, expansion):
     distances = [mh_distance_expanded(pair[0], pair[1], rows, cols, expansion)
