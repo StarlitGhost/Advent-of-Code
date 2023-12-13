@@ -1,8 +1,8 @@
-import sys
 import math
+from GhostyUtils import aoc
 
 if __name__ == '__main__':
-    directions, nodes = open(sys.argv[1]).read().strip().split('\n\n')
+    directions, nodes = aoc.read_sections()
     nodes = nodes.split('\n')
 
     graph = {}

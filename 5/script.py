@@ -1,4 +1,4 @@
-import sys
+from GhostyUtils import aoc
 
 
 class Mapping:
@@ -11,7 +11,7 @@ class Mapping:
             dst_start, src_start, length = map(int, line.split())
             self.ranges.append((src_start, dst_start, length))
         self.ranges.sort()
-        #print(name, self.ranges)
+        # print(name, self.ranges)
 
     def __repr__(self):
         return str(self.__dict__)
@@ -30,13 +30,15 @@ def read_mappings(inputs):
         mappings.append(Mapping(mapping))
     return mappings
 
+
 def process_mappings(seed, mappings):
     conversions = [seed]
     for mapping in mappings:
         seed = mapping.map_naive(seed)
         conversions.append(seed)
-    #print(seed, conversions)
+    # print(seed, conversions)
     return seed
+
 
 def process_ranges(seed_ranges, mappings):
     positions = sorted(seed_ranges)
@@ -86,7 +88,7 @@ def process_ranges(seed_ranges, mappings):
 
 
 if __name__ == '__main__':
-    inputs = open(sys.argv[1]).read().strip().split('\n\n')
+    inputs = aoc.read_sections()
 
     seeds = list(map(int, inputs.pop(0).split()[1:]))
     s = iter(seeds)
@@ -100,4 +102,3 @@ if __name__ == '__main__':
 
     positions = process_ranges(seed_ranges, mappings)
     print(min(start for start, _ in positions))
-

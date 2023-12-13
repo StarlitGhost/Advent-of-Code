@@ -1,7 +1,8 @@
-import sys
 import itertools
+from GhostyUtils import aoc
 from GhostyUtils.vec2 import manhattan_distance
 from GhostyUtils.grid import Grid
+
 
 def mh_distance_expanded(start, end, rows, cols, expansion):
     dist = manhattan_distance(start, end)
@@ -15,18 +16,23 @@ def mh_distance_expanded(start, end, rows, cols, expansion):
             dist += expansion
     return dist
 
+
 def expansion_rows_cols(grid):
-    expand_rows = [y for y, row in enumerate(grid.by_rows()) if all(x == '.' for x in row)]
-    expand_columns = [x for x, col in enumerate(grid.by_cols()) if all(y == '.' for y in col)]
+    expand_rows = [y for y, row in enumerate(grid.by_rows())
+                   if all(x == '.' for x in row)]
+    expand_columns = [x for x, col in enumerate(grid.by_cols())
+                      if all(y == '.' for y in col)]
     return expand_rows, expand_columns
+
 
 def find_distances_expanded(galaxies, rows, cols, expansion):
     distances = [mh_distance_expanded(pair[0], pair[1], rows, cols, expansion)
                  for pair in itertools.combinations(galaxies, 2)]
     return distances
 
+
 if __name__ == '__main__':
-    inputs = open(sys.argv[1]).read().strip().split('\n')
+    inputs = aoc.read_lines()
     space = Grid(inputs)
 
     rows, cols = expansion_rows_cols(space)

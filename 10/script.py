@@ -1,8 +1,9 @@
-import sys
 from enum import Enum
 import functools
+from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2
+
 
 class Dir(Enum):
     NORTH = 0
@@ -10,10 +11,11 @@ class Dir(Enum):
     EAST = 2
     WEST = 3
 
-dir_offset = {Dir.WEST: Vec2(-1,0),
-              Dir.EAST: Vec2(1,0),
-              Dir.NORTH: Vec2(0,-1),
-              Dir.SOUTH: Vec2(0,1)}
+
+dir_offset = {Dir.WEST: Vec2(-1, 0),
+              Dir.EAST: Vec2(1, 0),
+              Dir.NORTH: Vec2(0, -1),
+              Dir.SOUTH: Vec2(0, 1)}
 
 pipe_connects = {'|': [Dir.NORTH, Dir.SOUTH],
                  '-': [Dir.EAST, Dir.WEST],
@@ -31,15 +33,15 @@ dir_connects = {Dir.NORTH: Dir.SOUTH,
 
 
 if __name__ == '__main__':
-    rows = open(sys.argv[1]).read().strip().split('\n')
+    rows = aoc.read_lines()
     pipe_grid = Grid(rows)
     width = pipe_grid.width()
     height = pipe_grid.height()
 
     def s_type(grid, s_pos):
-        dirs = [dir_ for dir_ in pipe_connects['S']
+        s_dirs = [dir_ for dir_ in pipe_connects['S']
                 if dir_connects[dir_] in pipe_connects[grid[s_pos + dir_offset[dir_]]]]
-        return [pipe for pipe, pipe_dirs in pipe_connects.items() if pipe_dirs == dirs][0]
+        return [pipe for pipe, dirs in pipe_connects.items() if dirs == s_dirs][0]
 
     def find_path(grid, s_pos):
         pos = s_pos

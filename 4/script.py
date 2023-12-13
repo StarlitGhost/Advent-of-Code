@@ -1,8 +1,7 @@
-import sys
-import re
+from GhostyUtils import aoc
 
 if __name__ == '__main__':
-    inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
+    inputs = aoc.read_lines()
 
     num_cards = len(inputs)
     total = 0

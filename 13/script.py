@@ -1,9 +1,9 @@
-import sys
-from pprint import pprint
+from GhostyUtils import aoc
 from GhostyUtils.diff import hamming_distance
 from GhostyUtils.grid import Grid
 
 mapStore = {}
+
 
 def find_mirror(map_, smudges=False, mapIndex=0, row_col='row'):
     for i in range(1, map_.height()):
@@ -26,15 +26,16 @@ def find_mirror(map_, smudges=False, mapIndex=0, row_col='row'):
                     if diff == 1:
                         smudge_count += 1
                         if smudge_count > 1:
-                            # too many smudges needed for this to be the mirror, skip
+                            # too many smudges for this to be the mirror, skip
                             break
                     continue
                 else:
                     break
     return 0
 
+
 if __name__ == '__main__':
-    maps = open(sys.argv[1]).read().strip().split('\n\n')
+    maps = aoc.read_sections()
 
     total = 0
     totals = 0

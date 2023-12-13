@@ -1,8 +1,8 @@
-import sys
 from math import prod
+from GhostyUtils import aoc
 
 if __name__ == '__main__':
-    inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
+    inputs = aoc.read_lines()
 
     bag = {'red': 12, 'green': 13, 'blue': 14}
     possible_games = []
@@ -15,7 +15,7 @@ if __name__ == '__main__':
         game_id = int(g[0].split(' ')[1])
         rounds = g[1].split('; ')
 
-        #print(game, '->', game_id, rounds)
+        # print(game, '->', game_id, rounds)
 
         for game_round in rounds:
             cubes = game_round.split(', ')

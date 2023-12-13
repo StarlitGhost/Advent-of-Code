@@ -1,8 +1,8 @@
-import sys
 from math import prod
+from GhostyUtils import aoc
 
 if __name__ == '__main__':
-    inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
+    inputs = aoc.read_lines()
 
     times = map(int, inputs[0].split()[1:])
     distances = map(int, inputs[1].split()[1:])
