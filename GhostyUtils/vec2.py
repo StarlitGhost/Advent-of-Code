@@ -24,7 +24,7 @@ class Vec2:
 
     @staticmethod
     def from_str(self, s: str, split: str = ',') -> 'Vec2':
-        return from_tuple(*tuple(map(int, s.split(split))))
+        return Vec2.from_tuple(*tuple(map(int, s.split(split))))
 
     def as_tuple(self) -> tuple:
         return tuple(self._data)
