@@ -14,18 +14,23 @@ def find_mirror(map_, smudges=False, mapIndex=0, row_col='row'):
                 smudge_count = diff
             for j in range(1,len(map_)):
                 if i+j >= len(map_) or i-1-j < 0:
+                    # reached the edge of the map
                     if smudges and i == mapStore[mapIndex][row_col]:
                         # we found the same row/col without smudges, skip it
                         break
                     else:
                         return i
-                if map_[i+j] != map_[i-1-j]:
-                    if smudges and hamming_distance(map_[i+j], map_[i-1-j]) == 1:
+
+                # compare row/col pairs outward from our current position
+                diff = hamming_distance(map_[i+j], map_[i-1-j])
+                if diff == 0 or (smudges and diff == 1):
+                    if diff == 1:
                         smudge_count += 1
                         if smudge_count > 1:
                             # too many smudges needed for this to be the mirror, skip
                             break
-                        continue
+                    continue
+                else:
                     break
     return 0
 
@@ -58,5 +63,6 @@ if __name__ == '__main__':
         if rows == 0 and cols == 0:
             print(f'smudged map {i}:')
             print('\n'.join(''.join(row) for row in m))
+
     print(total)
     print(totals)
