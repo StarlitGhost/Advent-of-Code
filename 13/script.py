@@ -1,19 +1,18 @@
 import sys
 from pprint import pprint
+from GhostyUtils.diff import hamming_distance
+from GhostyUtils.grid import Grid
 
 mapStore = {}
 
-def hamming_distance(left, right):
-    return sum(l != r for l, r in zip(left, right))
-
 def find_mirror(map_, smudges=False, mapIndex=0, row_col='row'):
-    for i in range(1, len(map_)):
+    for i in range(1, map_.height()):
         diff = hamming_distance(map_[i], map_[i-1])
         if diff == 0 or (smudges and diff == 1):
             if smudges:
                 smudge_count = diff
-            for j in range(1,len(map_)):
-                if i+j >= len(map_) or i-1-j < 0:
+            for j in range(1, map_.height()):
+                if i+j >= map_.height() or i-1-j < 0:
                     # reached the edge of the map
                     if smudges and i == mapStore[mapIndex][row_col]:
                         # we found the same row/col without smudges, skip it
@@ -40,7 +39,7 @@ if __name__ == '__main__':
     total = 0
     totals = 0
     for i, m in enumerate(maps):
-        m = [[c for c in row] for row in m.split('\n')]
+        m = Grid(m.split('\n'))
 
         row = find_mirror(m)
         # store the row so we can tell if the smudge changes it
@@ -49,20 +48,20 @@ if __name__ == '__main__':
         total += row*100
         totals += rows*100
 
-        col = find_mirror(list(zip(*m)))
+        col = find_mirror(m.transposed())
         # store the col so we can tell if the smudge changes it
         mapStore[i]['col'] = col
-        cols = find_mirror(list(zip(*m)), True, i, 'col')
+        cols = find_mirror(m.transposed(), True, i, 'col')
         total += col
         totals += cols
 
         # print maps where we don't find reflection lines, for debug
         if row == 0 and col == 0:
             print(f'map {i}:')
-            print('\n'.join(''.join(row) for row in m))
+            print(m)
         if rows == 0 and cols == 0:
             print(f'smudged map {i}:')
-            print('\n'.join(''.join(row) for row in m))
+            print(m)
 
     print(total)
     print(totals)

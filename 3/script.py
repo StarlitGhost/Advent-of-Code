@@ -1,8 +1,9 @@
 import sys
+from GhostyUtils.grid import Grid
 
 def search(grid, x, y):
-    width = len(grid[0])
-    height = len(grid)
+    width = grid.width()
+    height = grid.height()
 
     for search_y in [-1,0,1]:
         if y + search_y < 0 or y + search_y > height-1:
@@ -11,7 +12,7 @@ def search(grid, x, y):
         for search_x in [-1,0,1]:
             if x + search_x < 0 or x + search_x > width-1:
                 continue
-            search = grid[y + search_y][x + search_x]
+            search = grid[x + search_x, y + search_y]
             if isinstance(search, int):
                 continue
             elif search == '.':
@@ -21,8 +22,8 @@ def search(grid, x, y):
     return False
 
 def search_gear(grid, x, y):
-    width = len(grid[0])
-    height = len(grid)
+    width = grid.width()
+    height = grid.height()
 
     part_nums = []
     for search_y in [-1,0,1]:
@@ -34,7 +35,7 @@ def search_gear(grid, x, y):
         for search_x in [-1,0,1]:
             if x + search_x < 0 or x + search_x > width-1:
                 continue
-            search = grid[y + search_y][x + search_x]
+            search = grid[x + search_x, y + search_y]
             if isinstance(search, int) and search not in line_part_nums:
                  line_part_nums.append(search)
 
@@ -50,36 +51,36 @@ def search_gear(grid, x, y):
 if __name__ == '__main__':
     inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
 
-    grid = [[c for c in line] for line in inputs]
+    grid = Grid(inputs)
 
     # convert numbers in the grid into ints
-    for y in range(len(grid)):
+    for y in range(grid.height()):
         num = ''
-        for x in range(len(grid[y])):
-            if grid[y][x].isnumeric():
-                num += grid[y][x]
+        for x in range(grid.width()):
+            if grid[x,y].isnumeric():
+                num += grid[x,y]
             else:
                 if num:
                     for c in range(len(num)):
-                        grid[y][x-c-1] = int(num)
+                        grid[x-c-1,y] = int(num)
                     num = ''
         # handle numbers on the end of a row
         if num:
             for c in range(len(num)):
-                grid[y][len(grid[y])-c-1] = int(num)
+                grid[grid.width()-c-1,y] = int(num)
             num = ''
         
     # p1
     parts = []
-    for y in range(len(grid)):
+    for y in range(grid.height()):
         searching = True
         #line_parts = []
-        for x in range(len(grid[y])):
-            if isinstance(grid[y][x], int):
+        for x in range(grid.width()):
+            if isinstance(grid[x,y], int):
                 if searching:
                     if search(grid, x, y):
-                        parts.append(grid[y][x])
-                        #line_parts.append(grid[y][x])
+                        parts.append(grid[x,y])
+                        #line_parts.append(grid[x,y])
                         searching = False
             else:
                 searching = True
@@ -90,9 +91,9 @@ if __name__ == '__main__':
 
     # p2
     gear_sum = 0
-    for y in range(len(grid)):
-        for x in range(len(grid[y])):
-            if grid[y][x] != '*':
+    for y in range(grid.height()):
+        for x in range(grid.width()):
+            if grid[x,y] != '*':
                 continue
             
             gear_sum += search_gear(grid, x, y)

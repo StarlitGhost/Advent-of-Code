@@ -1,5 +1,5 @@
 import sys
-import functools
+from math import prod
 
 if __name__ == '__main__':
     inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 skip = True
                 break
 
-        powers.append(functools.reduce(lambda x, y: x*y, cols.values()))
+        powers.append(prod(cols.values()))
 
         if not skip:
             possible_games.append(game_id)
