@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 
+
 def hamming_distance(left: Sequence, right: Sequence) -> int:
     """Returns the number of differences between 2 equal-length sequences"""
 

@@ -70,5 +70,6 @@ class Vec2:
     def __setitem__(self, idx: int, value: int) -> None:
         self._data[idx] = value
 
+
 def manhattan_distance(start: Vec2, end: Vec2) -> int:
     return abs(start.x - end.x) + abs(start.y - end.y)

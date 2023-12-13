@@ -1,0 +1,22 @@
+[project]
+name = "GhostyUtils"
+version = "0.1.0"
+authors = [
+    { name="StarlitGhost", email="ghosty@starlitghost.xyz" },
+]
+description = "A library of commonly needed classes, functions, and algorithms for Advent of Code puzzles"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/StarlitGhost/aoc-utils"
+Issues = "https://github.com/StarlitGhost/aoc-utils/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

@@ -1,4 +1,11 @@
 [flake8]
+extend-ignore = E741
 exclude =
+    .git
+    .github
     build
+    dist
     .eggs
+    __pycache__
+    .pytest_cache
+    GhostyUtils.egg-info
