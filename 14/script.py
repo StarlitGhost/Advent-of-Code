@@ -1,31 +1,17 @@
-from enum import Enum
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
-from GhostyUtils.vec2 import Vec2
-
-
-class Dir(Enum):
-    NORTH = 0
-    SOUTH = 1
-    EAST = 2
-    WEST = 3
-
-
-dir_offset = {Dir.WEST: Vec2(-1, 0),
-              Dir.EAST: Vec2(1, 0),
-              Dir.NORTH: Vec2(0, -1),
-              Dir.SOUTH: Vec2(0, 1)}
+from GhostyUtils.vec2 import Vec2, Dir
 
 
 class RollingRock:
-    def __init__(self, pos):
+    def __init__(self, pos: Vec2):
         self.pos = pos
 
     def __str__(self):
         return "O"
 
     def roll(self, direction: Dir, grid: Grid):
-        moveDir = dir_offset[direction]
+        moveDir = direction.as_vec2()
         offset = self.pos
 
         # search ahead until we find an obstacle
@@ -45,7 +31,7 @@ class RollingRock:
 
 
 class StaticRock:
-    def __init__(self, pos):
+    def __init__(self, pos: Vec2):
         self.pos = pos
 
     def __str__(self):
@@ -57,11 +43,11 @@ def tilt(grid: Grid, direction: Dir):
         case Dir.NORTH:
             gridScan = grid.by_rows()
         case Dir.SOUTH:
-            gridScan = reversed(list(grid.by_rows()))
+            gridScan = grid.by_rows(reverse=True)
         case Dir.WEST:
             gridScan = grid.by_cols()
         case Dir.EAST:
-            gridScan = reversed(list(grid.by_cols()))
+            gridScan = grid.by_cols(reverse=True)
 
     # roll rocks line by line, from the edge tilted down to the opposite side
     for line in gridScan:
