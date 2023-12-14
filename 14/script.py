@@ -53,7 +53,7 @@ def tilt(grid: Grid, direction: Dir):
         case Dir.NORTH:
             gridScan = grid.by_rows()
         case Dir.SOUTH:
-            gridScan = reversed(list(grid.by_rows))
+            gridScan = reversed(list(grid.by_rows()))
         case Dir.WEST:
             gridScan = grid.by_cols()
         case Dir.EAST:
@@ -62,6 +62,21 @@ def tilt(grid: Grid, direction: Dir):
         rocks = (rock for rock in row if type(rock) is RollingRock)
         for rock in rocks:
             rock.roll(direction, grid)
+
+
+def load(rocks, height):
+    return sum(height - rock.pos.y for rock in rocks)
+
+
+def spin(cycle, grid, history):
+    for d, dir_ in enumerate(cycle):
+        tilt(grid, dir_)
+        str_grid = str(grid)
+        if str_grid in history:
+            return d, history.index(str_grid)
+        else:
+            history.append(str_grid)
+    return 3, 0
 
 
 if __name__ == "__main__":
@@ -74,6 +89,37 @@ if __name__ == "__main__":
     for pos in grid.find_all('#'):
         grid[pos] = StaticRock(pos)
 
+    history = [str(grid)]
+
     tilt(grid, Dir.NORTH)
-    # print(grid)
-    print(sum(grid.height() - rock.pos.y for rock in rocks))
+    print('P1 Load:', load(rocks, grid.height()))
+
+    history.append(str(grid))
+
+    cycle = [Dir.NORTH, Dir.WEST, Dir.SOUTH, Dir.EAST]
+    spin(cycle[1:], grid, history)
+    total_spins = 1000000000
+    for i in range(1, total_spins):
+        loop, end = spin(cycle, grid, history)
+        if end:
+            start_c = end
+            end_c = len(history)
+            length_c = end_c - start_c
+            start_s = start_c / len(cycle)
+            end_s = end_c / len(cycle)
+            length_s = end_s - start_s
+            offset_s = (total_spins - start_s) % length_s
+            offset_c = int(offset_s * len(cycle))
+            print(f'Start cycle: {start_c} | '
+                  f'End cycle: {end_c} | '
+                  f'Cycle length: {length_c}')
+            print(f'Start spin: {start_s} | '
+                  f'End spin: {end_s} | '
+                  f'Spin length: {length_s} | '
+                  f'Spin offset: {offset_s}')
+            print(f'Cycle history offset at {total_spins} spins: '
+                  f'{start_c + offset_c}')
+            final_grid = Grid(history[start_c + offset_c].splitlines())
+            rocks = (RollingRock(pos) for pos in final_grid.find_all('O'))
+            print('P2 Load:', load(rocks, final_grid.height()))
+            break
