@@ -45,7 +45,7 @@ class Grid:
                 (0 <= position.y < self._height))
 
     def __str__(self):
-        return '\n'.join(''.join(row) for row in self.grid)
+        return '\n'.join(''.join(str(o) for o in row) for row in self.grid)
 
     def __getitem__(self, key) -> Any:
         if type(key) in [Vec2, tuple]:
