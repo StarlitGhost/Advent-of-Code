@@ -27,12 +27,14 @@ class Grid:
                 if element == target:
                     yield Vec2(x, y)
 
-    def by_rows(self) -> Iterable[Sequence]:
-        for row in self.grid:
+    def by_rows(self, *, reverse: bool = False) -> Iterable[Sequence]:
+        for row in (self.grid if not reverse else reversed(self.grid)):
             yield row
 
-    def by_cols(self) -> Iterable[Sequence]:
-        for col in zip(*self.grid):
+    def by_cols(self, *, reverse: bool = False) -> Iterable[Sequence]:
+        # getting rid of this list() call would be good if possible,
+        # to avoid duplicating the whole grid in memory
+        for col in (zip(*self.grid) if not reverse else reversed(list(zip(*self.grid)))):
             yield col
 
     def transposed(self) -> 'Grid':
