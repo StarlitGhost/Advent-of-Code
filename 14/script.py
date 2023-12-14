@@ -61,14 +61,14 @@ def north_load(rocks, height):
 
 
 def spin(cycle, grid, rocks, history):
-    for d, dir_ in enumerate(cycle):
-        tilt(grid, dir_)
+    for d in cycle:
+        tilt(grid, d)
         new_rock_positions = rock_positions(rocks)
         if new_rock_positions in history:
-            return d, history.index(new_rock_positions)
+            return history.index(new_rock_positions)
         else:
             history.append(new_rock_positions)
-    return 3, -1
+    return -1
 
 
 def rock_positions(rocks):
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     spin(cycle[1:], grid, rocks, history)
     total_spins = 1000000000
     for i in range(1, total_spins):
-        loop, end = spin(cycle, grid, rocks, history)
+        end = spin(cycle, grid, rocks, history)
         if end >= 0:
             start_c = end
             end_c = len(history)
