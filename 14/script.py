@@ -27,6 +27,8 @@ class RollingRock:
     def roll(self, direction: Dir, grid: Grid):
         moveDir = dir_offset[direction]
         offset = self.pos
+
+        # search ahead until we find an obstacle
         while True:
             if not grid.vec2_inside(offset + moveDir):
                 break
@@ -35,6 +37,8 @@ class RollingRock:
                 offset = offset + moveDir
             else:
                 break
+
+        # move to the last open space we found
         grid[self.pos] = '.'
         self.pos = offset
         grid[self.pos] = self
@@ -58,13 +62,15 @@ def tilt(grid: Grid, direction: Dir):
             gridScan = grid.by_cols()
         case Dir.EAST:
             gridScan = reversed(list(grid.by_cols()))
-    for row in gridScan:
-        rocks = (rock for rock in row if type(rock) is RollingRock)
+
+    # roll rocks line by line, from the edge tilted down to the opposite side
+    for line in gridScan:
+        rocks = (rock for rock in line if type(rock) is RollingRock)
         for rock in rocks:
             rock.roll(direction, grid)
 
 
-def load(rocks, height):
+def north_load(rocks, height):
     return sum(height - rock[1] for rock in rocks)
 
 
@@ -76,7 +82,7 @@ def spin(cycle, grid, rocks, history):
             return d, history.index(new_rock_positions)
         else:
             history.append(new_rock_positions)
-    return 3, 0
+    return 3, -1
 
 
 def rock_positions(rocks):
@@ -96,7 +102,7 @@ if __name__ == "__main__":
     history = [rock_positions(rocks)]
 
     tilt(grid, Dir.NORTH)
-    print('P1 Load:', load(rock_positions(rocks), grid.height()))
+    print('P1 Load:', north_load(rock_positions(rocks), grid.height()))
 
     history.append(rock_positions(rocks))
 
@@ -105,7 +111,7 @@ if __name__ == "__main__":
     total_spins = 1000000000
     for i in range(1, total_spins):
         loop, end = spin(cycle, grid, rocks, history)
-        if end:
+        if end >= 0:
             start_c = end
             end_c = len(history)
             length_c = end_c - start_c
@@ -124,5 +130,5 @@ if __name__ == "__main__":
             print(f'Cycle history offset at {total_spins} spins: '
                   f'{start_c + offset_c}')
             final_rocks = history[start_c + offset_c]
-            print('P2 Load:', load(final_rocks, grid.height()))
+            print('P2 Load:', north_load(final_rocks, grid.height()))
             break
