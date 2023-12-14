@@ -65,18 +65,22 @@ def tilt(grid: Grid, direction: Dir):
 
 
 def load(rocks, height):
-    return sum(height - rock.pos.y for rock in rocks)
+    return sum(height - rock[1] for rock in rocks)
 
 
-def spin(cycle, grid, history):
+def spin(cycle, grid, rocks, history):
     for d, dir_ in enumerate(cycle):
         tilt(grid, dir_)
-        str_grid = str(grid)
-        if str_grid in history:
-            return d, history.index(str_grid)
+        new_rock_positions = rock_positions(rocks)
+        if new_rock_positions in history:
+            return d, history.index(new_rock_positions)
         else:
-            history.append(str_grid)
+            history.append(new_rock_positions)
     return 3, 0
+
+
+def rock_positions(rocks):
+    return set(rock.pos.as_tuple() for rock in rocks)
 
 
 if __name__ == "__main__":
@@ -89,18 +93,18 @@ if __name__ == "__main__":
     for pos in grid.find_all('#'):
         grid[pos] = StaticRock(pos)
 
-    history = [str(grid)]
+    history = [rock_positions(rocks)]
 
     tilt(grid, Dir.NORTH)
-    print('P1 Load:', load(rocks, grid.height()))
+    print('P1 Load:', load(rock_positions(rocks), grid.height()))
 
-    history.append(str(grid))
+    history.append(rock_positions(rocks))
 
     cycle = [Dir.NORTH, Dir.WEST, Dir.SOUTH, Dir.EAST]
-    spin(cycle[1:], grid, history)
+    spin(cycle[1:], grid, rocks, history)
     total_spins = 1000000000
     for i in range(1, total_spins):
-        loop, end = spin(cycle, grid, history)
+        loop, end = spin(cycle, grid, rocks, history)
         if end:
             start_c = end
             end_c = len(history)
@@ -119,7 +123,6 @@ if __name__ == "__main__":
                   f'Spin offset: {offset_s}')
             print(f'Cycle history offset at {total_spins} spins: '
                   f'{start_c + offset_c}')
-            final_grid = Grid(history[start_c + offset_c].splitlines())
-            rocks = (RollingRock(pos) for pos in final_grid.find_all('O'))
-            print('P2 Load:', load(rocks, final_grid.height()))
+            final_rocks = history[start_c + offset_c]
+            print('P2 Load:', load(final_rocks, grid.height()))
             break
