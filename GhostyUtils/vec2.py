@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Vec2:
     def __init__(self, x: int, y: int) -> None:
         self._data = [x, y]
@@ -69,6 +72,16 @@ class Vec2:
 
     def __setitem__(self, idx: int, value: int) -> None:
         self._data[idx] = value
+
+
+class Dir(Enum):
+    NORTH = (0, -1)
+    SOUTH = (0, 1)
+    EAST = (1, 0)
+    WEST = (-1, 0)
+
+    def as_vec2(self) -> Vec2:
+        return Vec2.from_tuple(self.value)
 
 
 def manhattan_distance(start: Vec2, end: Vec2) -> int:
