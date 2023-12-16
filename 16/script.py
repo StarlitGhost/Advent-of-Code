@@ -99,7 +99,6 @@ class Beam:
         return walk(self.pos.as_tuple(), target.as_tuple(), self.dir_.value)
 
 
-
 def beam_coverage(starting_beam: Beam, grid: Grid, obstacles: Obstacles) -> int:
     beams = [starting_beam]
 
