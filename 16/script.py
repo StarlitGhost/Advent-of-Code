@@ -1,4 +1,3 @@
-from typing import Iterable
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2, Dir
@@ -21,7 +20,7 @@ class Beam:
     def as_tuple(self):
         return (self.pos.as_tuple(), self.dir_.value)
 
-    def trace(self, grid: Grid, obstacles: Obstacles):# -> list[tuple], list['Beam']:
+    def trace(self, grid: Grid, obstacles: Obstacles):
         match self.dir_:
             case Dir.NORTH:
                 ob = filter(lambda v: v.y <= self.pos.y and v.x == self.pos.x,
@@ -79,14 +78,7 @@ class Beam:
         return [pos for pos in _walk(target)]
 
 
-if __name__ == "__main__":
-    grid = Grid(aoc.read_lines())
-    vert_splitters = tuple(grid.find_all('|'))
-    horz_splitters = tuple(grid.find_all('-'))
-    mirrors = tuple(grid.find_all('\\')) + tuple(grid.find_all('/'))
-    obstacles = Obstacles(vert_splitters, horz_splitters, mirrors)
-
-    starting_beam = Beam(Vec2(0, 0), Dir.EAST)
+def beam_coverage(starting_beam: Beam, grid: Grid, obstacles: Obstacles) -> int:
     beams = [starting_beam]
 
     coverage = set()
@@ -111,4 +103,35 @@ if __name__ == "__main__":
                 new_beams.append(b)
             coverage.update(covers)
         beams = new_beams
-    print(len(coverage))
+    return len(coverage)
+
+
+if __name__ == "__main__":
+    grid = Grid(aoc.read_lines())
+    vert_splitters = tuple(grid.find_all('|'))
+    horz_splitters = tuple(grid.find_all('-'))
+    mirrors = tuple(grid.find_all('\\')) + tuple(grid.find_all('/'))
+    obstacles = Obstacles(vert_splitters, horz_splitters, mirrors)
+
+    beam = Beam(Vec2(0, 0), Dir.EAST)
+    print(beam_coverage(beam, grid, obstacles))
+
+    best_coverage = 0
+    best_beam = None
+
+    def gen_beams():
+        for beam in (Beam(Vec2(0, y), Dir.EAST) for y in range(grid.height())):
+            yield beam
+        for beam in (Beam(Vec2(grid.width()-1, y), Dir.WEST) for y in range(grid.height())):
+            yield beam
+        for beam in (Beam(Vec2(x, grid.height()-1), Dir.NORTH) for x in range(grid.width())):
+            yield beam
+        for beam in (Beam(Vec2(x, 0), Dir.SOUTH) for x in range(grid.width())):
+            yield beam
+
+    for beam in gen_beams():
+        coverage = beam_coverage(beam, grid, obstacles)
+        if coverage > best_coverage:
+            best_coverage = coverage
+            best_beam = beam
+    print(best_coverage, best_beam)
