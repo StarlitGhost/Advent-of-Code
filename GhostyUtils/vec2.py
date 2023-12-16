@@ -1,24 +1,39 @@
 from enum import Enum
+from typing import Union
+
+
+Vec2DataType = Union[int, float]
+Vec2TupleType = Union['Vec2', tuple]
 
 
 class Vec2:
-    def __init__(self, x: int, y: int) -> None:
-        self._data = [x, y]
+    def __init__(self,
+                 x: Union[Vec2DataType, tuple, 'Dir'],
+                 y: Vec2DataType = None) -> None:
+        if y is None:
+            if type(x) is tuple and len(x) == 2:
+                self._data = list(x)
+            elif type(x) is Dir:
+                self._data = x.value
+        elif type(x) in [int, float] and type(y) in [int, float]:
+            self._data = [x, y]
+        else:
+            raise ValueError(f"Couldn't init Vec2 with {x} ({type(x)}), {y} ({type(y)})")
 
     @property
-    def x(self) -> int:
+    def x(self) -> Vec2DataType:
         return self._data[0]
 
     @x.setter
-    def x(self, value: int):
+    def x(self, value: Vec2DataType):
         self._data[0] = value
 
     @property
-    def y(self) -> int:
+    def y(self) -> Vec2DataType:
         return self._data[1]
 
     @y.setter
-    def y(self, value: int):
+    def y(self, value: Vec2DataType):
         self._data[1] = value
 
     @staticmethod
@@ -30,16 +45,31 @@ class Vec2:
         return Vec2.from_tuple(*tuple(map(int, s.split(split))))
 
     def as_tuple(self) -> tuple:
-        return tuple(self._data)
+        return tuple(self)
+
+    def __iter__(self) -> Vec2DataType:
+        # for tuple()/list() conversion
+        for d in self._data:
+            yield d
 
     def __str__(self) -> str:
-        return ','.join(str(d) for d in self._data)
+        return '('+','.join(str(d) for d in self._data)+')'
 
-    def __add__(self, other: 'Vec2') -> 'Vec2':
+    def __add__(self, other: Vec2TupleType) -> 'Vec2':
         new = Vec2(self.x, self.y)
         return new.__iadd__(other)
 
-    def __iadd__(self, other: 'Vec2') -> 'Vec2':
+    def __radd__(self, other: tuple) -> 'Vec2':
+        if type(other) is not tuple:
+            return NotImplemented
+        return Vec2.from_tuple(other).__iadd__(self)
+
+    def __iadd__(self, other: Vec2TupleType) -> 'Vec2':
+        if type(other) is tuple:
+            other = Vec2.from_tuple(other)
+        elif type(other) is not Vec2:
+            return NotImplemented
+
         self.x += other.x
         self.y += other.y
         return self
@@ -47,30 +77,40 @@ class Vec2:
     def __neg__(self) -> 'Vec2':
         return Vec2(-self.x, -self.y)
 
-    def __sub__(self, other: 'Vec2') -> 'Vec2':
-        new = Vec2(self.x, other.x)
+    def __sub__(self, other: Vec2TupleType) -> 'Vec2':
+        new = Vec2(self.x, self.y)
         return new.__isub__(other)
 
-    def __isub__(self, other: 'Vec2') -> 'Vec2':
+    def __rsub__(self, other: tuple) -> 'Vec2':
+        if type(other) is not tuple:
+            return NotImplemented
+        return Vec2.from_tuple(other).__isub__(self)
+
+    def __isub__(self, other: Vec2TupleType) -> 'Vec2':
+        if type(other) is tuple:
+            other = Vec2.from_tuple(other)
+        elif type(other) is not Vec2:
+            return NotImplemented
+
         self.x -= other.x
         self.y -= other.y
         return self
 
-    def __eq__(self, other: 'Vec2') -> bool:
+    def __eq__(self, other: Vec2TupleType) -> bool:
         if type(other) is tuple:
             other = Vec2.from_tuple(other)
         if type(other) is Vec2:
             return self.x == other.x and self.y == other.y
         else:
-            raise ValueError(f"Tried to compare Vec2 with {type(other)}")
+            return NotImplemented
 
-    def __ne__(self, other: 'Vec2') -> bool:
+    def __ne__(self, other: Vec2TupleType) -> bool:
         return not self.__eq__(other)
 
-    def __getitem__(self, idx: int) -> int:
+    def __getitem__(self, idx: int) -> Vec2DataType:
         return self._data[idx]
 
-    def __setitem__(self, idx: int, value: int) -> None:
+    def __setitem__(self, idx: int, value: Vec2DataType) -> None:
         self._data[idx] = value
 
 
@@ -80,9 +120,22 @@ class Dir(Enum):
     EAST = (1, 0)
     WEST = (-1, 0)
 
+    UP = NORTH
+    DOWN = SOUTH
+    LEFT = WEST
+    RIGHT = EAST
+
     def as_vec2(self) -> Vec2:
         return Vec2.from_tuple(self.value)
 
+    def as_tuple(self) -> tuple:
+        return self.value
 
-def manhattan_distance(start: Vec2, end: Vec2) -> int:
+
+def manhattan_distance(start: Vec2TupleType, end: Vec2TupleType) -> int:
+    if type(start) is tuple:
+        start = Vec2(start)
+    if type(end) is tuple:
+        end = Vec2(end)
+
     return abs(start.x - end.x) + abs(start.y - end.y)
