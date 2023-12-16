@@ -17,31 +17,35 @@ def walk(start: tuple, target: tuple, direction: tuple) -> tuple[tuple]:
     return tuple(pos for pos in _walk(start, target, direction))
 
 
-# @cache  # faster with CPython, slower with PyPy
-def get_obstacle(start: tuple, direction: tuple, vert_obs: tuple, horz_obs: tuple) -> Vec2:
-    start = Vec2(*start)
-    match Dir(direction):
-        case Dir.NORTH:
-            ob = filter(lambda v: v[1] <= start.y and v[0] == start.x, reversed(vert_obs))
-        case Dir.SOUTH:
-            ob = filter(lambda v: v[1] >= start.y and v[0] == start.x, vert_obs)
-        case Dir.EAST:
-            ob = filter(lambda v: v[0] >= start.x and v[1] == start.y, horz_obs)
-        case Dir.WEST:
-            ob = filter(lambda v: v[0] <= start.x and v[1] == start.y, reversed(horz_obs))
-    ob = next(ob, None)
-    if ob:
-        ob = Vec2(*ob)
-    return ob
-
-
 class Obstacles:
     def __init__(self, vert_splitters, horz_splitters, mirrors):
         self.vertical = tuple(v.as_tuple() for v in
                               sorted(horz_splitters + mirrors, key=lambda v: v.y))
         self.horizontal = tuple(v.as_tuple() for v in
                                 sorted(vert_splitters + mirrors, key=lambda v: v.x))
+        self.cache = {}
 
+    def get(self, start: tuple, direction: tuple) -> Vec2:
+        if (start, direction) in self.cache:
+            return self.cache[(start, direction)]
+
+        start = Vec2(*start)
+        match Dir(direction):
+            case Dir.NORTH:
+                ob = filter(lambda v: v[1] <= start.y and v[0] == start.x, reversed(self.vertical))
+            case Dir.SOUTH:
+                ob = filter(lambda v: v[1] >= start.y and v[0] == start.x, self.vertical)
+            case Dir.EAST:
+                ob = filter(lambda v: v[0] >= start.x and v[1] == start.y, self.horizontal)
+            case Dir.WEST:
+                ob = filter(lambda v: v[0] <= start.x and v[1] == start.y, reversed(self.horizontal))
+        ob = next(ob, None)
+        if ob:
+            ob = Vec2(*ob)
+
+        self.cache[(start.as_tuple(), direction)] = ob
+
+        return ob
 
 class Beam:
     def __init__(self, pos: Vec2, direction: Dir):
@@ -55,8 +59,7 @@ class Beam:
         return (self.pos.as_tuple(), self.dir_.value)
 
     def trace(self, grid: Grid, obstacles: Obstacles):
-        ob = get_obstacle(self.pos.as_tuple(), self.dir_.value,
-                          obstacles.vertical, obstacles.horizontal)
+        ob = obstacles.get(self.pos.as_tuple(), self.dir_.value)
         if not ob:
             match self.dir_:
                 case Dir.NORTH:
