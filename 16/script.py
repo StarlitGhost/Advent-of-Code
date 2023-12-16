@@ -29,23 +29,24 @@ class Obstacles:
         if (start, direction) in self.cache:
             return self.cache[(start, direction)]
 
-        start = Vec2(*start)
+        s = start
         match Dir(direction):
             case Dir.NORTH:
-                ob = filter(lambda v: v[1] <= start.y and v[0] == start.x, reversed(self.vertical))
+                ob = filter(lambda v: v[1] <= s[1] and v[0] == s[0], reversed(self.vertical))
             case Dir.SOUTH:
-                ob = filter(lambda v: v[1] >= start.y and v[0] == start.x, self.vertical)
+                ob = filter(lambda v: v[1] >= s[1] and v[0] == s[0], self.vertical)
             case Dir.EAST:
-                ob = filter(lambda v: v[0] >= start.x and v[1] == start.y, self.horizontal)
+                ob = filter(lambda v: v[0] >= s[0] and v[1] == s[1], self.horizontal)
             case Dir.WEST:
-                ob = filter(lambda v: v[0] <= start.x and v[1] == start.y, reversed(self.horizontal))
+                ob = filter(lambda v: v[0] <= s[0] and v[1] == s[1], reversed(self.horizontal))
         ob = next(ob, None)
         if ob:
             ob = Vec2(*ob)
 
-        self.cache[(start.as_tuple(), direction)] = ob
+        self.cache[(start, direction)] = ob
 
         return ob
+
 
 class Beam:
     def __init__(self, pos: Vec2, direction: Dir):
