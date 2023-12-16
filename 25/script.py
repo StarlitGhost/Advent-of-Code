@@ -27,5 +27,5 @@ if __name__ == "__main__":
     for code_idx, code in enumerate(gen_next()):
         code, row, col = code
         if row == m_row-1 and col == m_col-1:
-            print(code)
+            print(f'{code} | Code #{code_idx+1}')
             break
