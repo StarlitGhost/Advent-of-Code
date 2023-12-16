@@ -1,12 +1,46 @@
+from functools import cache
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2, Dir
 
 
+@cache
+def walk(start: tuple, target: tuple, direction: tuple) -> tuple[tuple]:
+    def _walk(start, target, direction):
+        pos = Vec2(*start)
+        target = Vec2(*target)
+        dir_ = Vec2(*direction)
+        while pos != target:
+            yield pos.as_tuple()
+            pos += dir_
+        yield pos.as_tuple()
+    return tuple(pos for pos in _walk(start, target, direction))
+
+
+# @cache  # faster with CPython, slower with PyPy
+def get_obstacle(start: tuple, direction: tuple, vert_obs: tuple, horz_obs: tuple) -> Vec2:
+    start = Vec2(*start)
+    match Dir(direction):
+        case Dir.NORTH:
+            ob = filter(lambda v: v[1] <= start.y and v[0] == start.x, reversed(vert_obs))
+        case Dir.SOUTH:
+            ob = filter(lambda v: v[1] >= start.y and v[0] == start.x, vert_obs)
+        case Dir.EAST:
+            ob = filter(lambda v: v[0] >= start.x and v[1] == start.y, horz_obs)
+        case Dir.WEST:
+            ob = filter(lambda v: v[0] <= start.x and v[1] == start.y, reversed(horz_obs))
+    ob = next(ob, None)
+    if ob:
+        ob = Vec2(*ob)
+    return ob
+
+
 class Obstacles:
     def __init__(self, vert_splitters, horz_splitters, mirrors):
-        self.vertical = sorted(horz_splitters + mirrors, key=lambda v: v.y)
-        self.horizontal = sorted(vert_splitters + mirrors, key=lambda v: v.x)
+        self.vertical = tuple(v.as_tuple() for v in
+                              sorted(horz_splitters + mirrors, key=lambda v: v.y))
+        self.horizontal = tuple(v.as_tuple() for v in
+                                sorted(vert_splitters + mirrors, key=lambda v: v.x))
 
 
 class Beam:
@@ -21,20 +55,8 @@ class Beam:
         return (self.pos.as_tuple(), self.dir_.value)
 
     def trace(self, grid: Grid, obstacles: Obstacles):
-        match self.dir_:
-            case Dir.NORTH:
-                ob = filter(lambda v: v.y <= self.pos.y and v.x == self.pos.x,
-                            reversed(obstacles.vertical))
-            case Dir.SOUTH:
-                ob = filter(lambda v: v.y >= self.pos.y and v.x == self.pos.x,
-                            obstacles.vertical)
-            case Dir.EAST:
-                ob = filter(lambda v: v.x >= self.pos.x and v.y == self.pos.y,
-                            obstacles.horizontal)
-            case Dir.WEST:
-                ob = filter(lambda v: v.x <= self.pos.x and v.y == self.pos.y,
-                            reversed(obstacles.horizontal))
-        ob = list(ob)
+        ob = get_obstacle(self.pos.as_tuple(), self.dir_.value,
+                          obstacles.vertical, obstacles.horizontal)
         if not ob:
             match self.dir_:
                 case Dir.NORTH:
@@ -48,7 +70,7 @@ class Beam:
             # print('#', target.as_tuple())
             return self.walk(target), []
 
-        ob_pos = ob[0]
+        ob_pos = ob
         ob = grid[ob_pos]
         # print(ob, ob_pos.as_tuple())
         if self.dir_ in [Dir.NORTH, Dir.SOUTH]:
@@ -69,13 +91,9 @@ class Beam:
                 d = {Dir.EAST: Dir.NORTH, Dir.WEST: Dir.SOUTH}[self.dir_]
         return self.walk(ob_pos), [Beam(ob_pos + d.as_vec2(), d)]
 
-    def walk(self, target) -> list[tuple]:
-        def _walk(target):
-            while self.pos != target:
-                yield self.pos.as_tuple()
-                self.pos += self.dir_.as_vec2()
-            yield self.pos.as_tuple()
-        return [pos for pos in _walk(target)]
+    def walk(self, target):
+        return walk(self.pos.as_tuple(), target.as_tuple(), self.dir_.value)
+
 
 
 def beam_coverage(starting_beam: Beam, grid: Grid, obstacles: Obstacles) -> int:
