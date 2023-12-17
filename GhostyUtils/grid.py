@@ -41,6 +41,10 @@ class Grid:
     def transposed(self) -> 'Grid':
         return Grid(list(zip(*self.grid)))
 
+    def vec2_inside(self, position: Vec2) -> bool:
+        """deprecated, use .in_bounds()"""
+        return self.in_bounds(position)
+
     def in_bounds(self, position: Vec2) -> bool:
         return ((0 <= position.x < self._width) and
                 (0 <= position.y < self._height))
