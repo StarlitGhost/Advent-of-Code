@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Iterable, Any, Callable
+import itertools
 from GhostyUtils.vec2 import Vec2
 
 
@@ -40,9 +41,25 @@ class Grid:
     def transposed(self) -> 'Grid':
         return Grid(list(zip(*self.grid)))
 
-    def vec2_inside(self, position: Vec2) -> bool:
+    def in_bounds(self, position: Vec2) -> bool:
         return ((0 <= position.x < self._width) and
                 (0 <= position.y < self._height))
+
+    def neighbours(self, position: Vec2, *, diagonal: bool = True, connects: Callable = None):
+        if type(position) is tuple:
+            position = Vec2(position)
+        x, y = position.as_tuple()
+        if diagonal:
+            coords = [Vec2(x+dx, y+dy)
+                      for dx, dy in
+                      itertools.product([-1, 0, 1], repeat=2)
+                      if not dx == dy == 0]
+        else:
+            coords = [Vec2(x-1, y), Vec2(x+1, y), Vec2(x, y-1), Vec2(x, y+1)]
+        coords = [c for c in coords if self.in_bounds(c)]
+        if connects:
+            coords = [c for c in coords if connects(position, c)]
+        return coords
 
     def __str__(self):
         return '\n'.join(''.join(str(o) for o in row) for row in self.grid)
