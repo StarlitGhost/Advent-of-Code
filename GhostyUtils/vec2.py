@@ -67,6 +67,8 @@ class Vec2:
     def __iadd__(self, other: Vec2TupleType) -> 'Vec2':
         if type(other) is tuple:
             other = Vec2.from_tuple(other)
+        elif type(other) is Dir:
+            other = Vec2(other)
         elif type(other) is not Vec2:
             return NotImplemented
 
@@ -89,6 +91,8 @@ class Vec2:
     def __isub__(self, other: Vec2TupleType) -> 'Vec2':
         if type(other) is tuple:
             other = Vec2.from_tuple(other)
+        elif type(other) is Dir:
+            other = Vec2(other)
         elif type(other) is not Vec2:
             return NotImplemented
 
