@@ -96,6 +96,46 @@ class Vec2:
         self.y -= other.y
         return self
 
+    def __mul__(self, other: Vec2DataType) -> 'Vec2':
+        new = Vec2(self.x, self.y)
+        return new.__imul__(other)
+
+    def __rmul__(self, other: Vec2DataType) -> 'Vec2':
+        new = Vec2(self.x, self.y)
+        return new.__imul__(other)
+
+    def __imul__(self, other: Vec2DataType) -> 'Vec2':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self.x *= other
+        self.y *= other
+        return self
+
+    def __truediv__(self, other: Vec2DataType) -> 'Vec2':
+        new = Vec2(self.x, self.y)
+        return new.__itruediv__(other)
+
+    def __itruediv__(self, other: Vec2DataType) -> 'Vec2':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self.x /= other
+        self.y /= other
+        return self
+
+    def __floordiv__(self, other: Vec2DataType) -> 'Vec2':
+        new = Vec2(self.x, self.y)
+        return new.__ifloordiv__(other)
+
+    def __ifloordiv__(self, other: Vec2DataType) -> 'Vec2':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self.x //= other
+        self.y //= other
+        return self
+
     def __eq__(self, other: Vec2TupleType) -> bool:
         if type(other) is tuple:
             other = Vec2.from_tuple(other)
