@@ -75,7 +75,7 @@ if __name__ == "__main__":
     came_from, cost_so_far, last_pos = a_star(start, end)
     #path_overlay = build_overlay(came_from, start, last_pos)
     #print(grid.render_with_overlays([path_overlay]))
-    print(cost_so_far[last_pos])
+    print('p1 cost:', cost_so_far[last_pos])
 
     neighbours = functools.partial(possible_moves, grid=grid, min_dist=4, max_dist=10)
     a_star = functools.partial(pathfinding.a_star,
@@ -86,4 +86,4 @@ if __name__ == "__main__":
     came_from, cost_so_far, last_pos = a_star(start, end)
     #path_overlay = build_overlay(came_from, start, last_pos)
     #print(grid.render_with_overlays([path_overlay]))
-    print(cost_so_far[last_pos])
+    print('p2 cost:', cost_so_far[last_pos])
