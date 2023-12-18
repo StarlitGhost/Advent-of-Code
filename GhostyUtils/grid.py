@@ -5,8 +5,10 @@ from GhostyUtils.vec2 import Vec2
 
 
 class Grid:
-    def __init__(self, data: Sequence[str]) -> None:
-        self.grid = [[x for x in row] for row in data]
+    def __init__(self, data: Sequence[str], *, convert: Callable = None) -> None:
+        if not convert:
+            convert = (lambda v: v)
+        self.grid = [[convert(x) for x in row] for row in data]
         self._width = len(self.grid[0])
         self._height = len(self.grid)
 
@@ -16,17 +18,17 @@ class Grid:
     def height(self) -> int:
         return self._height
 
-    def find(self, target: str) -> Vec2:
+    def find(self, target: str) -> tuple:
         for y, row in enumerate(self.grid):
             for x, element in enumerate(row):
                 if element == target:
-                    return Vec2(x, y)
+                    return (x, y)
 
-    def find_all(self, target: str) -> Iterable[Vec2]:
+    def find_all(self, target: str) -> Iterable[tuple]:
         for y, row in enumerate(self.grid):
             for x, element in enumerate(row):
                 if element == target:
-                    yield Vec2(x, y)
+                    yield (x, y)
 
     def by_rows(self, *, reverse: bool = False) -> Iterable[Sequence]:
         for row in (self.grid if not reverse else reversed(self.grid)):
@@ -46,6 +48,8 @@ class Grid:
         return self.in_bounds(position)
 
     def in_bounds(self, position: Vec2) -> bool:
+        if type(position) is tuple:
+            position = Vec2(position)
         return ((0 <= position.x < self._width) and
                 (0 <= position.y < self._height))
 
@@ -54,12 +58,12 @@ class Grid:
             position = Vec2(position)
         x, y = position.as_tuple()
         if diagonal:
-            coords = [Vec2(x+dx, y+dy)
+            coords = [(x+dx, y+dy)
                       for dx, dy in
                       itertools.product([-1, 0, 1], repeat=2)
                       if not dx == dy == 0]
         else:
-            coords = [Vec2(x-1, y), Vec2(x+1, y), Vec2(x, y-1), Vec2(x, y+1)]
+            coords = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
         coords = [c for c in coords if self.in_bounds(c)]
         if connects:
             coords = [c for c in coords if connects(position, c)]
@@ -67,6 +71,19 @@ class Grid:
 
     def __str__(self):
         return '\n'.join(''.join(str(o) for o in row) for row in self.grid)
+
+    def render_with_overlays(self, overlays: list[dict[tuple, Any]]) -> str:
+        def overlay(obj, pos):
+            s = None
+            for o in reversed(overlays):
+                if pos in o and s is None:
+                    s = str(o[pos])
+            if s is None:
+                s = str(obj)
+            return s
+
+        return '\n'.join(''.join(overlay(o, (x, y)) for x, o in enumerate(row))
+                         for y, row in enumerate(self.grid))
 
     def __getitem__(self, key) -> Any:
         if type(key) in [Vec2, tuple]:
