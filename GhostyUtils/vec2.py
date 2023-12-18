@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Union
-
+import math
 
 Vec2DataType = Union[int, float]
 Vec2TupleType = Union['Vec2', tuple]
@@ -128,6 +128,12 @@ class Vec2:
 
         self.x /= other
         self.y /= other
+
+        if self.x.is_integer():
+            self.x = int(self.x)
+        if self.y.is_integer():
+            self.y = int(self.y)
+
         return self
 
     def __floordiv__(self, other: Vec2DataType) -> 'Vec2':
@@ -140,7 +146,12 @@ class Vec2:
 
         self.x //= other
         self.y //= other
+        self.x = int(self.x)
+        self.y = int(self.y)
         return self
+
+    def __abs__(self) -> Vec2DataType:
+        return self.magnitude()
 
     def __eq__(self, other: Vec2TupleType) -> bool:
         if type(other) is tuple:
@@ -158,6 +169,17 @@ class Vec2:
 
     def __setitem__(self, idx: int, value: Vec2DataType) -> None:
         self._data[idx] = value
+
+    def unit(self) -> 'Vec2':
+        new = self / self.magnitude()
+        if new.x.is_integer():
+            new.x = int(new.x)
+        if new.y.is_integer():
+            new.y = int(new.y)
+        return new
+
+    def magnitude(self) -> Vec2DataType:
+        return math.sqrt(self.x ** 2 + self.y ** 2)
 
 
 class Dir(Enum):
