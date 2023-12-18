@@ -1,6 +1,7 @@
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2, Dir
+from typing import Iterable
 
 
 charmap = {
@@ -50,8 +51,21 @@ def count_inside(grid: Grid) -> int:
     return total
 
 
+def shoelace(points: Iterable[tuple], count_perimeter=True) -> int:
+    area = 0
+    perimeter = 0
+    for p, pn in zip(points, points[1:]):
+        area += p[0]*pn[1] - p[1]*pn[0]
+        perimeter += abs(Vec2(pn) - Vec2(p))
+    area /= 2
+    area += (perimeter/2) + 1 if count_perimeter else -(perimeter/2) + 1
+    return area
+
+
 if __name__ == "__main__":
     plan_text = aoc.read_lines()
+
+    # p1
     dirs = {'U': Dir.UP, 'D': Dir.DOWN, 'L': Dir.LEFT, 'R': Dir.RIGHT}
     plan = []
     for d, distance, col in map(str.split, plan_text):
@@ -59,11 +73,15 @@ if __name__ == "__main__":
 
     route = set()
     pos = (0, 0)
+    points = [pos]
+    perimeter = 0
     for step in plan:
         d, dist, col = step
         target = pos + Vec2(d) * dist
         route.update((pos, d, col) for pos in walk(pos, target))
+        perimeter += abs(target - pos)
         pos = target.as_tuple()
+        points.append(pos)
     tl = (min(route, key=lambda r: r[0][0])[0][0], min(route, key=lambda r: r[0][1])[0][1])
     br = (max(route, key=lambda r: r[0][0])[0][0], max(route, key=lambda r: r[0][1])[0][1])
     width = br[0]-tl[0]+1
@@ -75,4 +93,23 @@ if __name__ == "__main__":
             grid[pos] = Cell(pos, r[1], r[2])
     total = count_inside(grid)
     print(grid)
-    print(total)
+    print('p1', 'scan:', total, 'shoelace:', int(shoelace(points)))
+
+    # p2
+    dirs = {0: Dir.RIGHT.value, 1: Dir.DOWN.value, 2: Dir.LEFT.value, 3: Dir.UP.value}
+    plan = []
+    for _, _, col in map(str.split, plan_text):
+        d = dirs[int(col[-2:-1])]
+        distance = int(col[-7:-2], 16)
+        plan.append((d, distance))
+
+    pos = (0, 0)
+    points = [pos]
+    perimeter = 0
+    for step in plan:
+        d, dist = step
+        target = pos + Vec2(d) * dist
+        perimeter += abs(target - pos)
+        pos = target.as_tuple()
+        points.append(pos)
+    print('p2', 'shoelace:', int(shoelace(points)))
