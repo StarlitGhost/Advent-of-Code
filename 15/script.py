@@ -1,12 +1,15 @@
 import sys
 
+
 def mh_distance(start, end):
     x1, y1 = start
     x2, y2 = end
     return abs(x1 - x2) + abs(y1 - y2)
 
+
 def clamp1(n):
     return max(min(n, 1), -1)
+
 
 def walk(start, end):
     x1, y1 = start
@@ -19,10 +22,11 @@ def walk(start, end):
     if dx == 0 and dy == 0:
         points.append(start)
     while (x, y) != (x2+dx, y2+dy):
-        points.append((x,y))
+        points.append((x, y))
         x += dx
         y += dy
     return points
+
 
 def row_sensor_intersection(row, sensor, mh_radius):
     if sensor[1]-mh_radius <= row <= sensor[1]+mh_radius:
@@ -32,6 +36,7 @@ def row_sensor_intersection(row, sensor, mh_radius):
         end_x = sensor[0] + depth
         return (start_x, row), (end_x, row)
     return None
+
 
 def scan(row, pairs):
     intersections = []
@@ -43,12 +48,14 @@ def scan(row, pairs):
             intersections.append(intersects)
     return intersections
 
+
 def row_coverage(intersections):
     covered = set()
     for i in intersections:
         points = walk(i[0], i[1])
         covered.update(points)
     return covered
+
 
 if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
@@ -79,7 +86,7 @@ if __name__ == '__main__':
 
     start = timer()
 
-    for y in range(0,max_coord+1):
+    for y in range(0, max_coord+1):
         intersections = scan(y, pairs)
         x = 0
         while x <= max_coord:

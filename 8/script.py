@@ -46,7 +46,7 @@ with open('input') as f:
         for line in map_:
             print(''.join(map(str, line)))
 
-    #print_map(visibility)
+    # print_map(visibility)
     print(sum(map(sum, visibility)))
 
     def scenic_distance(x, y, d):
@@ -63,7 +63,7 @@ with open('input') as f:
 
     def cast_scenic_rays(x, y):
         sd = []
-        for d in [(-1,0), (1,0), (0,-1), (0,1)]:
+        for d in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             sd.append(scenic_distance(x, y, d))
         return sd
 

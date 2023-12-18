@@ -9,13 +9,16 @@ with open('input') as f:
         ll, lh = map(int, l.split('-'))
         rl, rh = map(int, r.split('-'))
         intervals = sorted([(ll, lh), (rl, rh)], key=lambda rng: rng[1]-rng[0])
-        #print(intervals)
-        if intervals[0][0] >= intervals[1][0] and intervals[0][1] <= intervals[1][1]:
-            #print('full')
+        # print(intervals)
+        if (intervals[0][0] >= intervals[1][0] and
+                intervals[0][1] <= intervals[1][1]):
+            # print('full')
             full_overlaps += 1
-        if not ((intervals[0][0] > intervals[1][1] and intervals[0][1] > intervals[1][1]) or
-            (intervals[0][0] < intervals[1][0] and intervals[0][1] < intervals[1][0])):
-            #print('partial')
+        if not ((intervals[0][0] > intervals[1][1] and
+                 intervals[0][1] > intervals[1][1]) or
+                (intervals[0][0] < intervals[1][0] and
+                 intervals[0][1] < intervals[1][0])):
+            # print('partial')
             partial_overlaps += 1
 
     print(full_overlaps)

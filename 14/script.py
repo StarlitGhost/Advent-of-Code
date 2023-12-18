@@ -3,6 +3,7 @@ import itertools
 
 inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
+
 def pairwise(iterable):
     it = iter(iterable)
     a = next(it, None)
@@ -10,8 +11,10 @@ def pairwise(iterable):
         yield (a, b)
         a = b
 
+
 def clamp1(n):
     return max(min(n, 1), -1)
+
 
 class Grid:
     def __init__(self, chains):
@@ -28,17 +31,18 @@ class Grid:
         self.width = self.right - self.left + 1
         self.height = self.down - self.up + 1
 
-        self.grid = [[0 for x in range(self.width)] for y in range(self.height)]
+        self.grid = [[0 for x in range(self.width)]
+                     for y in range(self.height)]
 
         self.build_walls()
-        
+
         self.expands = False
 
-        #self.grid[0][500-self.left] = 3
+        # self.grid[0][500-self.left] = 3
 
     def find_bounds(self):
         all_links = list(itertools.chain.from_iterable(self.chains))
-        all_links.append((500,0))
+        all_links.append((500, 0))
         left = min(all_links, key=lambda link: link[0])[0]
         right = max(all_links, key=lambda link: link[0])[0]
         up = min(all_links, key=lambda link: link[1])[1]
@@ -123,6 +127,7 @@ class Grid:
 
 grid = Grid(inputs)
 
+
 def step(x, y):
     for i, d in enumerate(grid.below(x, y)):
         if d == 0:
@@ -134,12 +139,13 @@ def step(x, y):
     else:
         return False, x, y
 
+
 def simulate():
     x, y = 500, 0
     falling = True
     while falling:
         falling, x, y = step(x, y)
-        if falling == False:
+        if not falling:
             grid.write_sand(x, y)
             if (x, y) == (500, 0):
                 return False
@@ -148,10 +154,11 @@ def simulate():
         elif falling is None:
             return False
 
+
 while simulate():
     pass
 
-#print(grid)
+# print(grid)
 
 print(grid.count_sand())
 
@@ -162,5 +169,5 @@ grid.expands = True
 while simulate():
     pass
 
-#print(grid)
+# print(grid)
 print(grid.count_sand())

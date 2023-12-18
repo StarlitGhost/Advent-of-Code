@@ -1,7 +1,9 @@
 import sys
 import heapq
+from itertools import chain
 
 inputs = [line.rstrip('\n') for line in open(sys.argv[1])]
+
 
 class Cell:
     def __init__(self, char, x, y):
@@ -32,6 +34,7 @@ class Cell:
             return 'E'
         return chr(self.height + ord('a'))
 
+
 class Terrain:
     def __init__(self, data):
         self.cells = [
@@ -41,11 +44,12 @@ class Terrain:
 
     def __repr__(self):
         return '\n'.join(''.join((str(cell) for cell in row))
-                for row in self.cells)
+                         for row in self.cells)
 
     def draw_with_path(self, path):
-        return '\n'.join(''.join((str(cell) if cell not in path else '#' for cell in row))
-                for row in self.cells)
+        return '\n'.join(''.join((str(cell) if cell not in path else '#'
+                                 for cell in row))
+                         for row in self.cells)
 
     def find_start(self):
         for row in self.cells:
@@ -72,14 +76,14 @@ class Terrain:
 
     def neighbours(self, cell):
         x, y = cell.tuple()
-        coords = [(x-1,y), (x+1,y), (x,y-1), (x,y+1)]
+        coords = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
         coords = [c for c in coords if self.in_bounds(c)]
         neighbours = [self.cells[c[1]][c[0]] for c in coords]
         neighbours = [n for n in neighbours if self.traversible(cell, n)]
         return neighbours
 
     def cost(self, from_cell, to_cell):
-        return 1#to_cell.height - from_cell.height
+        return 1  # to_cell.height - from_cell.height
 
     def heuristic(self, cell, end):
         x1, y1 = cell.tuple()
@@ -100,6 +104,7 @@ end = terrain.find_end()
 
 print(f'Start: {start.tuple()} | End: {end.tuple()}')
 
+
 class PriorityQueue:
     def __init__(self):
         self.queue = []
@@ -113,7 +118,8 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.queue)[1]
 
-def a_star(terrain, start, end, early_out = None):
+
+def a_star(terrain, start, end, early_out=None):
     frontier = PriorityQueue()
     frontier.put(start, 0)
     came_from = {}
@@ -141,6 +147,7 @@ def a_star(terrain, start, end, early_out = None):
 
     return came_from, cost_so_far, current_cell
 
+
 def reconstruct_path(came_from, start, end):
     current_cell = end
     path = []
@@ -155,13 +162,13 @@ def reconstruct_path(came_from, start, end):
     path.reverse()
     return path
 
+
 came_from, cost_so_far, _ = a_star(terrain, start, end)
 path = reconstruct_path(came_from, start, end)
 
 print(terrain.draw_with_path(path))
 print(len(path)-1)
 
-from itertools import chain
 
 starts = list(chain.from_iterable(terrain.cells))
 starts = (cell for cell in starts if cell.height == 0)

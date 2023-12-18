@@ -7,6 +7,7 @@ if len(sys.argv) < 2:
 
 inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
+
 class Monkey:
     def __init__(self, inputs):
         self.number = int(next(inputs).split()[1][0:-1])
@@ -43,13 +44,14 @@ class Monkey:
                 target = self.true
             else:
                 target = self.false
-            #print(f'{self.number} -> {target} {self.items[idx]}')
+            # print(f'{self.number} -> {target} {self.items[idx]}')
             monkeys[target].items.append(self.items[idx])
             self.inspections += 1
         self.items = []
 
     def reduce_worry(self, mod):
         self.items = [item % mod for item in self.items]
+
 
 monkeys = []
 while True:
@@ -63,11 +65,11 @@ while True:
 mod = math.prod([monkey.test for monkey in monkeys])
 
 for round in range(0, 10000):
-    #print(f'## Round {round+1} ##')
+    # print(f'## Round {round+1} ##')
     for monkey in monkeys:
         monkey.inspect_items(monkeys)
-    #for monkey in monkeys:
-    #    print(f'{monkey.number} {monkey.items}')
+    # for monkey in monkeys:
+    #     print(f'{monkey.number} {monkey.items}')
 
     for monkey in monkeys:
         monkey.reduce_worry(mod)

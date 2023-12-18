@@ -7,6 +7,7 @@ def priority(item):
     else:
         return list(string.ascii_uppercase).index(item) + 27
 
+
 with open('input') as f:
     inputs = [line.rstrip('\n') for line in f]
     prio_sum = 0
@@ -24,7 +25,8 @@ with open('input') as f:
     prio_sum = 0
 
     def chunk(inputs, chunk_size):
-        return (inputs[pos:pos + chunk_size] for pos in range(0, len(inputs), chunk_size))
+        return (inputs[pos:pos + chunk_size]
+                for pos in range(0, len(inputs), chunk_size))
 
     for elves in chunk(inputs, 3):
         shared_item = set.intersection(*[set(elf) for elf in elves]).pop()
