@@ -1,4 +1,4 @@
-from GhostyUtils.vec2 import Vec2, manhattan_distance
+from GhostyUtils.vec2 import manhattan_distance
 import heapq
 from typing import Callable
 
@@ -17,11 +17,11 @@ class PriorityQueue:
         return heapq.heappop(self.queue)[1]
 
 
-def a_star(start: Vec2, end: Vec2, *,
+def a_star(start: tuple, end: tuple, *,
            neighbours: Callable,
            cost: Callable = None,
            heuristic: Callable = None,
-           early_out: Callable = None) -> tuple[dict[Vec2, Vec2], dict[Vec2, int], Vec2]:
+           early_out: Callable = None) -> tuple[dict[tuple, tuple], dict[tuple, int], tuple]:
 
     if cost is None:
         cost = (lambda current_pos, next_pos: 1)
@@ -56,3 +56,18 @@ def a_star(start: Vec2, end: Vec2, *,
                 came_from[next_pos] = current_pos
 
     return came_from, cost_so_far, current_pos
+
+
+def reconstruct_path(came_from, start, end):
+    current_pos = end
+    path = []
+    if end not in came_from:
+        return []
+
+    while current_pos != start:
+        path.append(current_pos)
+        current_pos = came_from[current_pos]
+
+    path.append(start)
+    path.reverse()
+    return path
