@@ -74,12 +74,10 @@ if __name__ == "__main__":
     route = set()
     pos = (0, 0)
     points = [pos]
-    perimeter = 0
     for step in plan:
         d, dist, col = step
         target = pos + Vec2(d) * dist
         route.update((pos, d, col) for pos in walk(pos, target))
-        perimeter += abs(target - pos)
         pos = target.as_tuple()
         points.append(pos)
     tl = (min(route, key=lambda r: r[0][0])[0][0], min(route, key=lambda r: r[0][1])[0][1])
@@ -105,11 +103,9 @@ if __name__ == "__main__":
 
     pos = (0, 0)
     points = [pos]
-    perimeter = 0
     for step in plan:
         d, dist = step
         target = pos + Vec2(d) * dist
-        perimeter += abs(target - pos)
         pos = target.as_tuple()
         points.append(pos)
     print('p2', 'shoelace:', int(shoelace(points)))
