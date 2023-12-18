@@ -15,6 +15,8 @@ class Vec2:
                 self._data = list(x)
             elif type(x) is Dir:
                 self._data = x.value
+            else:
+                raise ValueError(f"Couldn't init Vec2 with {x} ({type(x)}), no y given")
         elif type(x) in [int, float] and type(y) in [int, float]:
             self._data = [x, y]
         else:
