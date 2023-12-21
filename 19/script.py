@@ -2,10 +2,6 @@ from GhostyUtils import aoc
 import math
 
 
-MIN = 1
-MAX = 4000
-
-
 def process_workflow(workflow, part):
     for rule in workflow:
         if ':' in rule:
@@ -34,28 +30,28 @@ def calc_ranges(name: str, workflows: dict, ranges: dict, accepted: list):
             cmp, dest = rule.split(':')
             if '<' in cmp:
                 prop, val = cmp.split('<')
-                tr = ranges.copy()
-                fr = ranges.copy()
-                tr[prop] = (tr[prop][0], int(val)-1)
-                fr[prop] = (int(val), fr[prop][1])
+                true_ranges = ranges.copy()
+                false_ranges = ranges.copy()
+                true_ranges[prop] = (true_ranges[prop][0], int(val)-1)
+                false_ranges[prop] = (int(val), false_ranges[prop][1])
             if '>' in cmp:
                 prop, val = cmp.split('>')
-                tr = ranges.copy()
-                fr = ranges.copy()
-                tr[prop] = (int(val)+1, tr[prop][1])
-                fr[prop] = (fr[prop][0], int(val))
+                true_ranges = ranges.copy()
+                false_ranges = ranges.copy()
+                true_ranges[prop] = (int(val)+1, true_ranges[prop][1])
+                false_ranges[prop] = (false_ranges[prop][0], int(val))
             if dest == 'A':
-                tr['combos'] = math.prod(v[1]-v[0]+1 for v in tr.values())
-                # print('A', tr)
-                accepted.append(tr)
-                ranges = fr
+                true_ranges['combos'] = math.prod(v[1]-v[0]+1 for v in true_ranges.values())
+                # print('A', true_ranges)
+                accepted.append(true_ranges)
+                ranges = false_ranges
                 continue
             if dest == 'R':
-                # print('R', tr)
-                ranges = fr
+                # print('R', true_ranges)
+                ranges = false_ranges
                 continue
-            calc_ranges(f'{name}.{dest}', workflows, tr, accepted)
-            ranges = fr
+            calc_ranges(f'{name}.{dest}', workflows, true_ranges, accepted)
+            ranges = false_ranges
         else:
             if rule == 'A':
                 ranges['combos'] = math.prod(v[1]-v[0]+1 for v in ranges.values())
@@ -104,6 +100,8 @@ if __name__ == "__main__":
             total += part[prop]
     print('p1', total)
 
+    MIN = 1
+    MAX = 4000
     ranges = {'x': (MIN, MAX), 'm': (MIN, MAX), 'a': (MIN, MAX), 's': (MIN, MAX)}
     accepted = []
     calc_ranges('in', workflows, ranges, accepted)
