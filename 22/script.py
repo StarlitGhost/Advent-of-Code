@@ -110,14 +110,14 @@ if __name__ == "__main__":
 #   print(supporting)
 
     def will_fall(falls, brick):
-        for s in supporting[brick]:
-            if len(sitting_on[s] - falls) <= 1:
-                falls.add(s)
-                will_fall(falls, s)
+        for brick_above in supporting[brick]:
+            if len(sitting_on[brick_above] - falls) <= 1:
+                falls.add(brick_above)
+                will_fall(falls, brick_above)
 
     total_falls = 0
-    for b in unsafe:
+    for brick in unsafe:
         falls = set()
-        will_fall(falls, b)
+        will_fall(falls, brick)
         total_falls += len(falls)
     print('p2:', total_falls)
