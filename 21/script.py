@@ -1,6 +1,5 @@
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
-from GhostyUtils.vec2 import Vec2, Dir
 from functools import partial
 
 
