@@ -91,7 +91,7 @@ if __name__ == "__main__":
         sitting_on[label] = fall(grid, brick, label)
         for b in sitting_on[label]:
             supporting[b].add(label)
-#   print(sitting_on)
+#   print('sitting on:', sitting_on)
 
     # find bricks that are safe to remove
     # first add all the bricks to the safe set, then remove those found unsafe
@@ -102,22 +102,23 @@ if __name__ == "__main__":
         if len(below) == 1 and next(iter(below)) in safe:
             safe.remove(*below)
             unsafe.add(*below)
-#   print(safe)
+#   print('safe:', safe)
 
     print('p1:', len(safe))
 
-#   print(unsafe)
-#   print(supporting)
+#   print('unsafe:', unsafe)
+#   print('supporting:', supporting)
 
     def will_fall(falls, brick):
         for brick_above in supporting[brick]:
-            if len(sitting_on[brick_above] - falls) <= 1:
+            if len(sitting_on[brick_above] - falls) == 0:
                 falls.add(brick_above)
                 will_fall(falls, brick_above)
 
     total_falls = 0
     for brick in unsafe:
-        falls = set()
+        falls = set((brick,))
         will_fall(falls, brick)
-        total_falls += len(falls)
+#       print('falls from:', brick, falls)
+        total_falls += len(falls) - 1
     print('p2:', total_falls)
