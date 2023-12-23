@@ -76,6 +76,9 @@ class Vec2:
 
         self.x += other.x
         self.y += other.y
+
+        self._make_int_if_exact()
+
         return self
 
     def __neg__(self) -> 'Vec2':
@@ -100,6 +103,9 @@ class Vec2:
 
         self.x -= other.x
         self.y -= other.y
+
+        self._make_int_if_exact()
+
         return self
 
     def __mul__(self, other: Vec2DataType) -> 'Vec2':
@@ -116,6 +122,9 @@ class Vec2:
 
         self.x *= other
         self.y *= other
+
+        self._make_int_if_exact()
+
         return self
 
     def __truediv__(self, other: Vec2DataType) -> 'Vec2':
@@ -129,10 +138,7 @@ class Vec2:
         self.x /= other
         self.y /= other
 
-        if self.x.is_integer():
-            self.x = int(self.x)
-        if self.y.is_integer():
-            self.y = int(self.y)
+        self._make_int_if_exact()
 
         return self
 
@@ -146,8 +152,7 @@ class Vec2:
 
         self.x //= other
         self.y //= other
-        self.x = int(self.x)
-        self.y = int(self.y)
+        self._make_int_if_exact()
         return self
 
     def __abs__(self) -> Vec2DataType:
@@ -172,14 +177,17 @@ class Vec2:
 
     def unit(self) -> 'Vec2':
         new = self / self.magnitude()
-        if new.x.is_integer():
-            new.x = int(new.x)
-        if new.y.is_integer():
-            new.y = int(new.y)
+        new._make_int_if_exact()
         return new
 
     def magnitude(self) -> Vec2DataType:
         return math.sqrt(self.x ** 2 + self.y ** 2)
+
+    def _make_int_if_exact(self) -> None:
+        if type(self.x) is float and self.x.is_integer():
+            self.x = int(self.x)
+        if type(self.y) is float and self.y.is_integer():
+            self.y = int(self.y)
 
 
 class Dir(Enum):
