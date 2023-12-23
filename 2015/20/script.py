@@ -1,11 +1,15 @@
 import sys
 import itertools
+import math
+from math import log
+
 
 def robins_inequality(n):
     if 3 <= n <= 5040:
         return math.e * n * log(log(n)) + (0.6483 * n) / log(log(n))
     else:
         return math.e * n * log(log(n))
+
 
 if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))

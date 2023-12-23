@@ -2,6 +2,7 @@ import sys
 
 inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
+
 class Valve:
     def __init__(self, name, rate, tunnels):
         self.name = name
@@ -11,6 +12,7 @@ class Valve:
     def __repr__(self):
         return str(self.__dict__)
 
+
 class Tunnel:
     def __init__(self, target, length=1):
         self.target = target
@@ -18,6 +20,7 @@ class Tunnel:
 
     def __repr__(self):
         return str(self.__dict__)
+
 
 valves = []
 network = {}
@@ -29,8 +32,8 @@ for line in inputs:
 
 print(network)
 
-for valve in network.values():
-    for tunnel, length in valve.tunnels.items():
-        if network[tunnel].rate == 0 and tunnel != 'AA':
-            network[tunnel].tunnels[
-        pass
+# for valve in network.values():
+#   for tunnel, length in valve.tunnels.items():
+#       if network[tunnel].rate == 0 and tunnel != 'AA':
+#           network[tunnel].tunnels[
+#       pass
