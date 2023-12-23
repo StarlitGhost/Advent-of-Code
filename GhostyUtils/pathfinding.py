@@ -1,6 +1,6 @@
 from GhostyUtils.vec2 import manhattan_distance
 import heapq
-from typing import Callable
+from typing import Callable, Union
 
 
 class PriorityQueue:
@@ -16,13 +16,18 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.queue)[1]
 
+    def __len__(self):
+        return len(self.queue)
+
 
 def a_star(start: tuple, end: tuple, *,
-           neighbours: Callable,
+           neighbours: Callable = None,
            cost: Callable = None,
            heuristic: Callable = None,
            early_out: Callable = None) -> tuple[dict[tuple, tuple], dict[tuple, int], tuple]:
 
+    if neighbours is None:
+        raise ValueError("a_star: neighbours func is a required argument")
     if cost is None:
         cost = (lambda current_pos, next_pos: 1)
     if heuristic is None:
@@ -37,13 +42,10 @@ def a_star(start: tuple, end: tuple, *,
     came_from[start] = None
     cost_so_far[start] = 0
 
-    while not frontier.empty():
+    while frontier:
         current_pos = frontier.get()
 
-        if current_pos == end:
-            break
-
-        if early_out(current_pos):
+        if current_pos == end or early_out(current_pos):
             break
 
         for next_pos in neighbours(current_pos):
@@ -56,6 +58,40 @@ def a_star(start: tuple, end: tuple, *,
                 came_from[next_pos] = current_pos
 
     return came_from, cost_so_far, current_pos
+
+
+def bfs(start: tuple, end: tuple, *,
+        all_paths: bool = False,
+        neighbours: Callable = None,
+        early_out: Callable = None) -> Union[list[tuple], list[list[tuple]]]:
+
+    if neighbours is None:
+        raise ValueError("bfs: neighbours func is a required argument")
+    if early_out is None:
+        early_out = (lambda current_pos: False)
+
+    frontier = [[start]]
+    paths = []
+    while frontier:
+        path = frontier.pop(0)
+        current_pos = path[-1]
+
+        if current_pos == end or early_out(current_pos):
+            if all_paths:
+                paths.append(path)
+                continue
+            else:
+                return path
+
+        for next_pos in neighbours(current_pos):
+            if next_pos in path:
+                continue
+
+            new_path = list(path)
+            new_path.append(next_pos)
+            frontier.append(new_path)
+
+    return paths
 
 
 def reconstruct_path(came_from, start, end):
