@@ -12,12 +12,15 @@ force_dir = {
 }
 
 
-def passable(current_pos, next_pos, grid: Grid):
+def passable(current_pos, next_pos, *, grid: Grid, ignore_slopes: bool = False):
     cur_pos = Vec2(*current_pos)
     next_pos = Vec2(*next_pos)
 
     if grid[next_pos] == '#':
         return False
+
+    if ignore_slopes:
+        return True
 
     travel_dir = Dir((next_pos - cur_pos).as_tuple())
     if grid[next_pos] in force_dir:
@@ -34,15 +37,32 @@ def passable(current_pos, next_pos, grid: Grid):
 
 if __name__ == "__main__":
     grid = Grid(aoc.read_lines())
+
     start = Vec2(grid[0].index('.'), 0)
     end = Vec2(grid[-1].index('.'), grid.height()-1)
+
     passable_func = partial(passable, grid=grid)
     neighbours = partial(grid.neighbours, diagonal=False, connects=passable_func)
+
     paths = pathfinding.bfs(tuple(start),
                             tuple(end),
                             all_paths=True,
                             neighbours=neighbours)
+
     paths.sort(key=lambda p: len(p))
     path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
     print(grid.render_with_overlays([path_overlay]))
     print('p1:', len(paths[-1]) - 1)
+
+    passable_func = partial(passable, grid=grid, ignore_slopes=True)
+    neighbours = partial(grid.neighbours, diagonal=False, connects=passable_func)
+
+    paths = pathfinding.bfs(tuple(start),
+                            tuple(end),
+                            all_paths=True,
+                            neighbours=neighbours)
+
+    paths.sort(key=lambda p: len(p))
+    path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
+    print(grid.render_with_overlays([path_overlay]))
+    print('p2:', len(paths[-1]) - 1)
