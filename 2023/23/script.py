@@ -22,7 +22,7 @@ def passable(current_pos, next_pos, *, grid: Grid, ignore_slopes: bool = False):
     if ignore_slopes:
         return True
 
-    travel_dir = Dir((next_pos - cur_pos).as_tuple())
+    travel_dir = Dir(tuple(next_pos - cur_pos))
     if grid[next_pos] in force_dir:
         forced_dir = force_dir[grid[next_pos]]
         if travel_dir is Dir(tuple(-Vec2(forced_dir))):
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     paths = pathfinding.bfs(start, end, all_paths=True, neighbours=neighbours)
 
     paths.sort(key=lambda p: len(p))
-    path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
+    path_overlay = {pos: 'O' for pos in paths[-1]}
     print(grid.render_with_overlays([path_overlay]))
     print('p1:', len(paths[-1]) - 1)
 
@@ -57,6 +57,6 @@ if __name__ == "__main__":
     paths = pathfinding.bfs(start, end, all_paths=True, neighbours=neighbours)
 
     paths.sort(key=lambda p: len(p))
-    path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
+    path_overlay = {pos: 'O' for pos in paths[-1]}
     print(grid.render_with_overlays([path_overlay]))
     print('p2:', len(paths[-1]) - 1)
