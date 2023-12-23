@@ -14,8 +14,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/StarlitGhost/aoc-utils"
-Issues = "https://github.com/StarlitGhost/aoc-utils/issues"
+Homepage = "https://github.com/StarlitGhost/Advent-of-Code"
+Issues = "https://github.com/StarlitGhost/Advent-of-Code/issues"
 
 [build-system]
 requires = ["setuptools>=61.0"]
