@@ -38,16 +38,13 @@ def passable(current_pos, next_pos, *, grid: Grid, ignore_slopes: bool = False):
 if __name__ == "__main__":
     grid = Grid(aoc.read_lines())
 
-    start = Vec2(grid[0].index('.'), 0)
-    end = Vec2(grid[-1].index('.'), grid.height()-1)
+    start = (grid[0].index('.'), 0)
+    end = (grid[-1].index('.'), grid.height()-1)
 
     passable_func = partial(passable, grid=grid)
     neighbours = partial(grid.neighbours, diagonal=False, connects=passable_func)
 
-    paths = pathfinding.bfs(tuple(start),
-                            tuple(end),
-                            all_paths=True,
-                            neighbours=neighbours)
+    paths = pathfinding.bfs(start, end, all_paths=True, neighbours=neighbours)
 
     paths.sort(key=lambda p: len(p))
     path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
@@ -57,10 +54,7 @@ if __name__ == "__main__":
     passable_func = partial(passable, grid=grid, ignore_slopes=True)
     neighbours = partial(grid.neighbours, diagonal=False, connects=passable_func)
 
-    paths = pathfinding.bfs(tuple(start),
-                            tuple(end),
-                            all_paths=True,
-                            neighbours=neighbours)
+    paths = pathfinding.bfs(start, end, all_paths=True, neighbours=neighbours)
 
     paths.sort(key=lambda p: len(p))
     path_overlay = {tuple(pos): 'O' for pos in paths[-1]}
