@@ -2,15 +2,9 @@ from GhostyUtils import aoc, pathfinding
 from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2, Dir
 from functools import partial
-import itertools
 
 
-force_dir = {
-    '^': Dir.UP,
-    'v': Dir.DOWN,
-    '<': Dir.LEFT,
-    '>': Dir.RIGHT,
-}
+force_dir = Dir.map_udlr('^v<>')
 
 
 def passable(current_pos, next_pos, *, grid: Grid, ignore_slopes: bool = False):
@@ -26,7 +20,7 @@ def passable(current_pos, next_pos, *, grid: Grid, ignore_slopes: bool = False):
     travel_dir = Dir(tuple(next_pos - cur_pos))
     if grid[next_pos] in force_dir:
         forced_dir = force_dir[grid[next_pos]]
-        if travel_dir is Dir(tuple(-Vec2(forced_dir))):
+        if travel_dir is forced_dir.flipped():
             return False
 
     if grid[cur_pos] in force_dir:
