@@ -71,17 +71,16 @@ def bfs(start: tuple, end: tuple, *,
         early_out = (lambda current_pos: False)
 
     frontier = [[start]]
-    paths = []
     while frontier:
         path = frontier.pop(0)
         current_pos = path[-1]
 
         if current_pos == end or early_out(current_pos):
             if all_paths:
-                paths.append(path)
+                yield path
                 continue
             else:
-                return path
+                yield path
 
         for next_pos in neighbours(current_pos):
             if next_pos in path:
@@ -91,7 +90,40 @@ def bfs(start: tuple, end: tuple, *,
             new_path.append(next_pos)
             frontier.append(new_path)
 
-    return paths
+    return
+
+
+def dfs(start: tuple, end: tuple, *,
+        all_paths: bool = False,
+        neighbours: Callable = None,
+        early_out: Callable = None) -> Union[list[tuple], list[list[tuple]]]:
+
+    if neighbours is None:
+        raise ValueError("dfs: neighbours func is a required argument")
+    if early_out is None:
+        early_out = (lambda current_pos: False)
+
+    frontier = [[start]]
+    while frontier:
+        path = frontier.pop()
+        current_pos = path[-1]
+
+        if current_pos == end or early_out(current_pos):
+            if all_paths:
+                yield path
+                continue
+            else:
+                yield path
+
+        for next_pos in neighbours(current_pos):
+            if next_pos in path:
+                continue
+
+            new_path = list(path)
+            new_path.append(next_pos)
+            frontier.append(new_path)
+
+    return
 
 
 def reconstruct_path(came_from, start, end):
