@@ -1,5 +1,5 @@
 from GhostyUtils import aoc
-from GhostyUtils.vec2 import Vec2
+from GhostyUtils.vec3 import Vec3
 import math
 import itertools
 
@@ -26,8 +26,8 @@ if __name__ == "__main__":
     hail = []
     for hail_txt in aoc.read_lines():
         pos, v = hail_txt.split(' @ ')
-        pos = Vec2(tuple(map(int, pos.split(', ')[:-1])))
-        v = Vec2(tuple(map(int, v.split(', ')[:-1])))
+        pos = Vec3(tuple(map(int, pos.split(', '))))
+        v = Vec3(tuple(map(int, v.split(', '))))
         hail.append((pos, v))
 
     collisions_in_area = 0
