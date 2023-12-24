@@ -1,20 +1,186 @@
 from enum import Enum
-from typing import Union
+from typing import Union, Sequence
 import math
 
-Vec2DataType = Union[int, float]
-Vec2TupleType = Union['Vec2', tuple]
+VecDataType = Union[int, float]
+VecTupleType = Union['_Vec', tuple]
 
 
-class Vec2:
+class _Vec:
+    # prevent the base class from being instantiated
+    def __init__(self):
+        if type(self) is _Vec:
+            raise TypeError(f"only child classes of '{_Vec.__name__}' may be instantiated")
+
+    @classmethod
+    def from_tuple(cls, t: tuple) -> '_Vec':
+        return cls(t)
+
+    @classmethod
+    def from_str(cls, s: str, split: str = ', ') -> '_Vec':
+        return cls(tuple(map(int, s.split(split))))
+
+    def as_tuple(self) -> tuple:
+        return tuple(self)
+
+    def __iter__(self) -> VecDataType:
+        # for tuple()/list() conversion
+        for d in self._data:
+            yield d
+
+    def __str__(self) -> str:
+        return '('+', '.join(str(d) for d in self._data)+')'
+
+    def __add__(self, other: VecTupleType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__iadd__(other)
+
+    def __radd__(self, other: tuple) -> '_Vec':
+        if type(other) is not tuple:
+            return NotImplemented
+        cls = type(self)
+        return cls(other).__iadd__(self)
+
+    def __iadd__(self, other: VecTupleType) -> '_Vec':
+        cls = type(self)
+        if type(other) is tuple:
+            other = cls(other)
+        elif type(other) is not cls:
+            return NotImplemented
+
+        self._data = list(map(sum, zip(self._data, other._data)))
+
+        self._make_int_if_exact()
+        return self
+
+    def __neg__(self) -> '_Vec':
+        cls = type(self)
+        return cls(tuple(-d for d in self._data))
+
+    def __sub__(self, other: VecTupleType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__isub__(other)
+
+    def __rsub__(self, other: tuple) -> '_Vec':
+        if type(other) is not tuple:
+            return NotImplemented
+        cls = type(self)
+        return cls(other).__isub__(self)
+
+    def __isub__(self, other: VecTupleType) -> '_Vec':
+        cls = type(self)
+        if type(other) is tuple:
+            other = cls(other)
+        elif type(other) is not cls:
+            return NotImplemented
+
+        self += -other
+
+        self._make_int_if_exact()
+        return self
+
+    def __mul__(self, other: VecDataType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__imul__(other)
+
+    def __rmul__(self, other: VecDataType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__imul__(other)
+
+    def __imul__(self, other: VecDataType) -> '_Vec':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self._data = [d * other for d in self._data]
+
+        self._make_int_if_exact()
+        return self
+
+    def __truediv__(self, other: VecDataType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__itruediv__(other)
+
+    def __itruediv__(self, other: VecDataType) -> '_Vec':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self._data = [d / other for d in self._data]
+
+        self._make_int_if_exact()
+        return self
+
+    def __floordiv__(self, other: VecDataType) -> '_Vec':
+        cls = type(self)
+        new = cls(tuple(self))
+        return new.__ifloordiv__(other)
+
+    def __ifloordiv__(self, other: VecDataType) -> '_Vec':
+        if type(other) not in [int, float]:
+            return NotImplemented
+
+        self._data = [d // other for d in self._data]
+
+        self._make_int_if_exact()
+        return self
+
+    def __abs__(self) -> VecDataType:
+        return self.magnitude()
+
+    def __eq__(self, other: VecTupleType) -> bool:
+        cls = type(self)
+        if type(other) is tuple:
+            other = cls(other)
+        if type(other) is cls:
+            return self._data == other._data
+        else:
+            return NotImplemented
+
+    def __ne__(self, other: VecTupleType) -> bool:
+        return not self.__eq__(other)
+
+    def __getitem__(self, idx: int) -> VecDataType:
+        return self._data[idx]
+
+    def __setitem__(self, idx: int, value: VecDataType) -> None:
+        self._data[idx] = value
+
+    def unit(self) -> '_Vec':
+        new = self / self.magnitude()
+        new._make_int_if_exact()
+        return new
+
+    def magnitude(self) -> VecDataType:
+        return math.sqrt(sum(d ** 2 for d in self._data))
+
+    def _make_int_if_exact(self) -> None:
+        for i, d in enumerate(self._data):
+            if type(d) is float and d.is_integer():
+                self._data[i] = int(d)
+
+    @classmethod
+    def manhattan_distance(cls, start: VecTupleType, end: VecTupleType) -> int:
+        if type(start) in [tuple, list]:
+            start = cls(tuple(start))
+        if type(end) in [tuple, list]:
+            end = cls(tuple(end))
+
+        return sum(abs(sd - ed) for sd, ed in zip(start._data, end._data))
+
+
+class Vec2(_Vec):
     def __init__(self,
-                 x: Union[Vec2DataType, tuple, 'Dir'],
-                 y: Vec2DataType = None) -> None:
+                 x: Union[VecDataType, tuple, 'Dir'],
+                 y: VecDataType = None) -> None:
         if y is None:
-            if type(x) is tuple and len(x) == 2:
+            if type(x) in [tuple, list] and len(x) == 2:
                 self._data = list(x)
             elif type(x) is Dir:
-                self._data = x.value
+                self._data = list(x.value)
             else:
                 raise ValueError(f"Couldn't init Vec2 with {x} ({type(x)}), no y given")
         elif type(x) in [int, float] and type(y) in [int, float]:
@@ -23,171 +189,32 @@ class Vec2:
             raise ValueError(f"Couldn't init Vec2 with {x} ({type(x)}), {y} ({type(y)})")
 
     @property
-    def x(self) -> Vec2DataType:
+    def x(self) -> VecDataType:
         return self._data[0]
 
     @x.setter
-    def x(self, value: Vec2DataType):
+    def x(self, value: VecDataType):
         self._data[0] = value
 
     @property
-    def y(self) -> Vec2DataType:
+    def y(self) -> VecDataType:
         return self._data[1]
 
     @y.setter
-    def y(self, value: Vec2DataType):
+    def y(self, value: VecDataType):
         self._data[1] = value
 
-    @staticmethod
-    def from_tuple(t: tuple) -> 'Vec2':
-        return Vec2(*t)
-
-    @staticmethod
-    def from_str(self, s: str, split: str = ',') -> 'Vec2':
-        return Vec2.from_tuple(*tuple(map(int, s.split(split))))
-
-    def as_tuple(self) -> tuple:
-        return tuple(self)
-
-    def __iter__(self) -> Vec2DataType:
-        # for tuple()/list() conversion
-        for d in self._data:
-            yield d
-
-    def __str__(self) -> str:
-        return '('+','.join(str(d) for d in self._data)+')'
-
-    def __add__(self, other: Vec2TupleType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__iadd__(other)
-
-    def __radd__(self, other: tuple) -> 'Vec2':
-        if type(other) is not tuple:
-            return NotImplemented
-        return Vec2.from_tuple(other).__iadd__(self)
-
-    def __iadd__(self, other: Vec2TupleType) -> 'Vec2':
-        if type(other) is tuple:
-            other = Vec2.from_tuple(other)
-        elif type(other) is Dir:
+    def __iadd__(self, other: VecTupleType) -> 'Vec2':
+        if type(other) is Dir:
             other = Vec2(other)
-        elif type(other) is not Vec2:
-            return NotImplemented
 
-        self.x += other.x
-        self.y += other.y
+        return super().__iadd__(other)
 
-        self._make_int_if_exact()
-
-        return self
-
-    def __neg__(self) -> 'Vec2':
-        return Vec2(-self.x, -self.y)
-
-    def __sub__(self, other: Vec2TupleType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__isub__(other)
-
-    def __rsub__(self, other: tuple) -> 'Vec2':
-        if type(other) is not tuple:
-            return NotImplemented
-        return Vec2.from_tuple(other).__isub__(self)
-
-    def __isub__(self, other: Vec2TupleType) -> 'Vec2':
-        if type(other) is tuple:
-            other = Vec2.from_tuple(other)
-        elif type(other) is Dir:
+    def __isub__(self, other: VecTupleType) -> 'Vec2':
+        if type(other) is Dir:
             other = Vec2(other)
-        elif type(other) is not Vec2:
-            return NotImplemented
 
-        self.x -= other.x
-        self.y -= other.y
-
-        self._make_int_if_exact()
-
-        return self
-
-    def __mul__(self, other: Vec2DataType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__imul__(other)
-
-    def __rmul__(self, other: Vec2DataType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__imul__(other)
-
-    def __imul__(self, other: Vec2DataType) -> 'Vec2':
-        if type(other) not in [int, float]:
-            return NotImplemented
-
-        self.x *= other
-        self.y *= other
-
-        self._make_int_if_exact()
-
-        return self
-
-    def __truediv__(self, other: Vec2DataType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__itruediv__(other)
-
-    def __itruediv__(self, other: Vec2DataType) -> 'Vec2':
-        if type(other) not in [int, float]:
-            return NotImplemented
-
-        self.x /= other
-        self.y /= other
-
-        self._make_int_if_exact()
-
-        return self
-
-    def __floordiv__(self, other: Vec2DataType) -> 'Vec2':
-        new = Vec2(self.x, self.y)
-        return new.__ifloordiv__(other)
-
-    def __ifloordiv__(self, other: Vec2DataType) -> 'Vec2':
-        if type(other) not in [int, float]:
-            return NotImplemented
-
-        self.x //= other
-        self.y //= other
-        self._make_int_if_exact()
-        return self
-
-    def __abs__(self) -> Vec2DataType:
-        return self.magnitude()
-
-    def __eq__(self, other: Vec2TupleType) -> bool:
-        if type(other) is tuple:
-            other = Vec2.from_tuple(other)
-        if type(other) is Vec2:
-            return self.x == other.x and self.y == other.y
-        else:
-            return NotImplemented
-
-    def __ne__(self, other: Vec2TupleType) -> bool:
-        return not self.__eq__(other)
-
-    def __getitem__(self, idx: int) -> Vec2DataType:
-        return self._data[idx]
-
-    def __setitem__(self, idx: int, value: Vec2DataType) -> None:
-        self._data[idx] = value
-
-    def unit(self) -> 'Vec2':
-        new = self / self.magnitude()
-        new._make_int_if_exact()
-        return new
-
-    def magnitude(self) -> Vec2DataType:
-        return math.sqrt(self.x ** 2 + self.y ** 2)
-
-    def _make_int_if_exact(self) -> None:
-        if type(self.x) is float and self.x.is_integer():
-            self.x = int(self.x)
-        if type(self.y) is float and self.y.is_integer():
-            self.y = int(self.y)
+        return super().__isub__(other)
 
 
 class Dir(Enum):
@@ -201,17 +228,23 @@ class Dir(Enum):
     LEFT = WEST
     RIGHT = EAST
 
+    def flipped(self) -> 'Dir':
+        return Dir(tuple(-Vec2(self)))
+
+    @staticmethod
+    def map_udlr(udlr: Sequence) -> 'Dir':
+        return {s: d for s, d in zip(udlr, [Dir.UP, Dir.DOWN, Dir.LEFT, Dir.RIGHT])}
+
+    @staticmethod
+    def map_nswe(nswe: Sequence) -> 'Dir':
+        return {s: d for s, d in zip(nswe, [Dir.NORTH, Dir.SOUTH, Dir.WEST, Dir.EAST])}
+
     def as_vec2(self) -> Vec2:
-        return Vec2.from_tuple(self.value)
+        return Vec2(self.value)
 
     def as_tuple(self) -> tuple:
         return self.value
 
 
-def manhattan_distance(start: Vec2TupleType, end: Vec2TupleType) -> int:
-    if type(start) is tuple:
-        start = Vec2(start)
-    if type(end) is tuple:
-        end = Vec2(end)
-
-    return abs(start.x - end.x) + abs(start.y - end.y)
+def manhattan_distance(start: VecTupleType, end: VecTupleType) -> int:
+    return Vec2.manhattan_distance(start, end)
