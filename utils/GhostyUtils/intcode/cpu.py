@@ -16,6 +16,7 @@ class IntCode:
             self.memory = []
         else:
             self.load_memory(memory)
+        self._init_memory = list(self.memory)
 
         if input_gen is None:
             self.input = (_ for _ in [])
@@ -76,6 +77,9 @@ class IntCode:
             instr //= 10
         while True:
             yield PMode.POSITION
+
+    def reset(self):
+        self.memory = list(self._init_memory)
 
     def _load(self, addr: int, mode: PMode) -> int:
         if mode is PMode.POSITION:

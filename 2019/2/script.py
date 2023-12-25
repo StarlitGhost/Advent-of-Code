@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     for noun in range(100):
         for verb in range(100):
-            cpu.load_memory(aoc.read())
+            cpu.reset()
             cpu.memory[1] = noun
             cpu.memory[2] = verb
             if cpu.process()[0] == 19690720:
