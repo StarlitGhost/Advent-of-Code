@@ -27,13 +27,12 @@ def main():
         for other_comp in components[comp]:
             components[other_comp].add(comp)
 
-    seen = defaultdict(int)
+    seen = Counter()
     for _ in range(1000):
         comps = random.sample(list(components.keys()), 2)
         path = bfs(components, comps[0], comps[1])
-        for link in zip(path, path[1:]):
-            seen[tuple(sorted(link))] += 1
-    snips = Counter(seen).most_common(3)
+        seen.update(tuple(sorted(link)) for link in zip(path, path[1:]))
+    snips = seen.most_common(3)
     for snip in snips:
         l, r = snip[0]
         components[l].remove(r)
