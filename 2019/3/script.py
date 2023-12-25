@@ -10,7 +10,7 @@ def create_wire(wire: list[str]) -> set:
     steps = 0
     visited = defaultdict(list)
     for v in wire:
-        d = Vec2({'U': Dir.UP, 'D': Dir.DOWN, 'L': Dir.LEFT, 'R': Dir.RIGHT}[v[0]])
+        d = Vec2(Dir.map_udlr('UDLR')[v[0]])
         magnitude = int(v[1:])
         offset = d * magnitude
         end = start + offset
@@ -64,5 +64,5 @@ if __name__ == "__main__":
 
     closest, fewest = closest_intersection(wires)
 
-    print(closest)
-    print(fewest)
+    print('p1:', closest)
+    print('p2:', fewest)

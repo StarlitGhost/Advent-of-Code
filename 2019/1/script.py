@@ -2,7 +2,7 @@ from GhostyUtils import aoc
 
 
 if __name__ == "__main__":
-    print(sum(mod // 3 - 2 for mod in map(int, aoc.by_lines())))
+    print('p1:', sum(mod // 3 - 2 for mod in map(int, aoc.by_lines())))
 
     total_fuel = 0
     for mod in map(int, aoc.by_lines()):
@@ -14,4 +14,4 @@ if __name__ == "__main__":
             if fuel_fuel > 0:
                 mod_fuel += fuel_fuel
         total_fuel += mod_fuel
-    print(total_fuel)
+    print('p2:', total_fuel)
