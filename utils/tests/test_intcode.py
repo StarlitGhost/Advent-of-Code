@@ -80,6 +80,6 @@ def test_cpu():
         cpu = IntCode(prog['mem_in'],
                       input=prog['input'].pop,
                       output=output.append)
-        mem_out = cpu.process()
+        cpu.process()
         assert output == prog['output']
-        assert ','.join(str(m) for m in mem_out) == prog['mem_out']
+        assert cpu.str_memory() == prog['mem_out']

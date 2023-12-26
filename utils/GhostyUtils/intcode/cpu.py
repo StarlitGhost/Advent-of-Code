@@ -10,13 +10,14 @@ class PMode(Enum):
 class IntCode:
     def __init__(self,
                  memory: Union[list[int], str] = None,
-                 input: Iterable[int] = None,
+                 input: Callable = None,
                  output: Callable = None):
         if memory is None:
             self.memory = []
         else:
             self.load_memory(memory)
         self._init_memory = list(self.memory)
+        self.i_ptr = 0
 
         if input is None:
             self.input = [].pop
@@ -39,33 +40,44 @@ class IntCode:
     def str_memory(self) -> str:
         return ','.join(str(i) for i in self.memory)
 
+    def set_input_func(self, input_func: Callable):
+        self.input = input_func
+
+    def set_output_func(self, output_func: Callable):
+        self.output = output_func
+
+    def halted(self) -> bool:
+        return self.memory[self.i_ptr] == 99
+
     def process(self) -> list[int]:
-        i_ptr = 0
         while True:
-            instr = self.memory[i_ptr]
+            instr = self.memory[self.i_ptr]
             modes = IntCode.modes(instr)
             instr = instr % 100
 
             match instr:
                 case 99:  # halt
-                    i_ptr += 1
-                    return self.memory
+                    # self.i_ptr += 1
+                    return
                 case 1:  # add
-                    i_ptr += self._add(i_ptr+1, modes)
+                    self.i_ptr += self._add(self.i_ptr+1, modes)
                 case 2:  # mul
-                    i_ptr += self._mul(i_ptr+1, modes)
+                    self.i_ptr += self._mul(self.i_ptr+1, modes)
                 case 3:  # input
-                    i_ptr += self._input(i_ptr+1, modes)
+                    try:
+                        self.i_ptr += self._input(self.i_ptr+1, modes)
+                    except IndexError:
+                        return
                 case 4:  # output
-                    i_ptr += self._output(i_ptr+1, modes)
+                    self.i_ptr += self._output(self.i_ptr+1, modes)
                 case 5:  # jump-if-true
-                    i_ptr = self._jump_if_true(i_ptr+1, modes)
+                    self.i_ptr = self._jump_if_true(self.i_ptr+1, modes)
                 case 6:  # jump-if-false
-                    i_ptr = self._jump_if_false(i_ptr+1, modes)
+                    self.i_ptr = self._jump_if_false(self.i_ptr+1, modes)
                 case 7:  # less than
-                    i_ptr += self._less_than(i_ptr+1, modes)
+                    self.i_ptr += self._less_than(self.i_ptr+1, modes)
                 case 8:  # equals
-                    i_ptr += self._equals(i_ptr+1, modes)
+                    self.i_ptr += self._equals(self.i_ptr+1, modes)
                 case _:
                     raise ValueError(f"unrecognized instruction {instr}")
 
@@ -80,6 +92,7 @@ class IntCode:
 
     def reset(self):
         self.memory = list(self._init_memory)
+        self.i_ptr = 0
 
     def _load(self, addr: int, mode: PMode) -> int:
         if mode is PMode.POSITION:
