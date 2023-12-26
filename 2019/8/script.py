@@ -29,10 +29,10 @@ def main():
             fewest = count['0']
             fewest_layer = i
             ones, twos = count['1'], count['2']
-        print(f'####### layer {i+1:03} #######')
-        print(count)
-        print(layer)
-        print()
+#       print(f'####### layer {i+1:03} #######')
+#       print(count)
+#       print(layer)
+#       print()
     print(f'p1: {ones * twos} | layer {fewest_layer}')
 
     image = layers[0]
