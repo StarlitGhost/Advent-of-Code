@@ -10,7 +10,7 @@ class PMode(Enum):
 class IntCode:
     def __init__(self,
                  memory: Union[list[int], str] = None,
-                 input_gen: Iterable[int] = None,
+                 input: Iterable[int] = None,
                  output: Callable = None):
         if memory is None:
             self.memory = []
@@ -18,10 +18,10 @@ class IntCode:
             self.load_memory(memory)
         self._init_memory = list(self.memory)
 
-        if input_gen is None:
-            self.input = (_ for _ in [])
+        if input is None:
+            self.input = [].pop
         else:
-            self.input = input_gen
+            self.input = input
 
         if output is None:
             self.output = (lambda _: {}["attempted to write to non-existent output"])
@@ -111,7 +111,7 @@ class IntCode:
     def _input(self, addr: int, modes: Iterable[PMode]) -> int:
         store = self.memory[addr]
 
-        self.memory[store] = next(self.input)
+        self.memory[store] = self.input()
 
         return 2
 

@@ -78,7 +78,7 @@ def test_cpu():
     for prog in programs:
         output = []
         cpu = IntCode(prog['mem_in'],
-                      input_gen=(i for i in prog['input']),
+                      input=prog['input'].pop,
                       output=output.append)
         mem_out = cpu.process()
         assert output == prog['output']
