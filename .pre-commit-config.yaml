@@ -15,3 +15,4 @@ repos:
             - --exclude-patterns="utils/*"
             - --what-to-show-on-right-side=checkmark
             - --count-as-solved-when=on_leaderboard
+            - --verbose
