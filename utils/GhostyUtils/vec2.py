@@ -216,6 +216,9 @@ class Vec2(_Vec):
 
         return super().__isub__(other)
 
+    def north_angle(self) -> float:
+        return (math.atan2(self.y, self.x) / math.pi * 180.0 + 90.0) % 360.0
+
 
 class Dir(Enum):
     NORTH = (0, -1)
@@ -223,10 +226,15 @@ class Dir(Enum):
     EAST = (1, 0)
     WEST = (-1, 0)
 
-    UP = NORTH
-    DOWN = SOUTH
-    LEFT = WEST
-    RIGHT = EAST
+    UP = U = N = NORTH
+    DOWN = D = S = SOUTH
+    LEFT = L = W = WEST
+    RIGHT = R = E = EAST
+
+    NORTH_EAST = NE = (1, -1)
+    SOUTH_EAST = SE = (1, 1)
+    SOUTH_WEST = SW = (-1, 1)
+    NORTH_WEST = NW = (-1, -1)
 
     def flipped(self) -> 'Dir':
         return Dir(tuple(-Vec2(self)))
