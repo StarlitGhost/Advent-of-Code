@@ -18,7 +18,7 @@ class IntCode:
             self._init_memory = []
         else:
             self.load_memory(memory)
-        
+
         self.reset()
 
         if input is None:
