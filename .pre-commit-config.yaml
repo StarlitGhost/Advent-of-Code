@@ -3,16 +3,16 @@ repos:
       rev: 0.5.5
       hooks:
         - id: aoc-tiles
-            # Optionally use these arguments. Auto add tiles to git adds the tiles to git,
-            # possibly amends your commit by creating the tile images and updating the README.
-            # Language sorting shows the preference of the order of the languages to use.
-            # Exclude paterns are globs which can be used to exclude files when creating
-            # the tiles. See the customization section in the README for more flags.
-            # Simply remove the comments (#) below for args and the flags you want.
+          # Optionally use these arguments. Auto add tiles to git adds the tiles to git,
+          # possibly amends your commit by creating the tile images and updating the README.
+          # Language sorting shows the preference of the order of the languages to use.
+          # Exclude paterns are globs which can be used to exclude files when creating
+          # the tiles. See the customization section in the README for more flags.
+          # Simply remove the comments (#) below for args and the flags you want.
           args:
             - --auto-add-tiles-to-git=amend
             - --language-sorting=py,rs
-            - --exclude-patterns="utils/*"
+            - --exclude-patterns="utils/*,example*,test*"
             - --what-to-show-on-right-side=checkmark
             - --count-as-solved-when=on_leaderboard
             - --verbose
