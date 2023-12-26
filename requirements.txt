@@ -1,0 +1,7 @@
+advent-of-code-data==2.0.1
+build==1.0.3
+flake8==6.1.0
+pre-commit==3.6.0
+pytest==7.4.3
+pytest-runner==6.0.1
+twine==4.0.2
