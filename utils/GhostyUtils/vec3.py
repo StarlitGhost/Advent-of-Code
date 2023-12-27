@@ -14,14 +14,14 @@ class Vec3(_Vec):
                 raise ValueError(f"Couldn't init {type(self).__name__} with "
                                  f"{x} ({type(x)}), no y or z given")
         elif z is None:
-            if type(x) is VecDataType and type(y) is VecDataType:
+            if type(x) in [int, float] and type(y) in [int, float]:
                 self._data = [x, y, 0]
             else:
                 raise ValueError(f"Couldn't init {type(self).__name__} with "
                                  f"{x} ({type(x)}), "
                                  f"{y} ({type(y)}), "
                                  f"no z given (would default to 0)")
-        elif type(x) is VecDataType and type(y) is VecDataType and type(z) is VecDataType:
+        elif type(x) in [int, float] and type(y) in [int, float] and type(z) in [int, float]:
             self._data = [x, y, z]
         else:
             raise ValueError(f"Couldn't init {type(self).__name__} with "
