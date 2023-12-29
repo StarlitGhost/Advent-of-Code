@@ -30,6 +30,15 @@ class Grid:
                 if element == target:
                     yield (x, y)
 
+    def expand_for(self, pos: Vec2, fill: str = None):
+        if pos.x >= self._width:
+            for row in self.grid:
+                row.extend(fill for _ in range(pos.x + 1 - self._width))
+            self._width = pos.x + 1
+        if pos.y >= self._height:
+            self.grid.extend([fill for _ in range(self._width)] for _ in range(pos.y + 1 - self._height))
+            self._height = pos.y + 1
+
     def by_rows(self, *, reverse: bool = False) -> Iterable[Sequence]:
         for row in (self.grid if not reverse else reversed(self.grid)):
             yield row
