@@ -2,6 +2,7 @@ from GhostyUtils import aoc
 from GhostyUtils.vec3 import Vec3
 import re
 import itertools
+import math
 
 
 def energy(moon: dict) -> int:
@@ -42,6 +43,27 @@ def print_moons(moons: list[dict]):
         print(f"pos={vec_str(p)}, vel={vec_str(v)} | {moon['name']}")
 
 
+def tupleize(moons: list[dict]) -> tuple[tuple, tuple, tuple]:
+    x = tuple((moon['pos'].x, moon['v'].x) for moon in moons)
+    y = tuple((moon['pos'].y, moon['v'].y) for moon in moons)
+    z = tuple((moon['pos'].z, moon['v'].z) for moon in moons)
+    return x, y, z
+
+
+def record_history(history, x, y, z):
+    all_looped = True
+    if x not in history['x']:
+        history['x'].add(x)
+        all_looped = False
+    if y not in history['y']:
+        history['y'].add(y)
+        all_looped = False
+    if z not in history['z']:
+        history['z'].add(z)
+        all_looped = False
+    return all_looped
+
+
 def main():
     names = ['Io', 'Europa', 'Ganymede', 'Callisto']
     moons = [
@@ -50,20 +72,32 @@ def main():
         for line in aoc.read_lines()]
     [moons[i].__setitem__('name', name) for i, name in enumerate(names)]
 
-    print("After 0 steps:")
-    print_moons(moons)
-    print()
+#   print("After 0 steps:")
+#   print_moons(moons)
+#   print()
 
+    history = {'x': set(), 'y': set(), 'z': set()}
+    x, y, z = tupleize(moons)
+    record_history(history, x, y, z)
+    step = 1
     steps = 1000
-    for step in range(1, steps+1):
+    done = False
+    while not done or step < steps:
+        step += 1
         apply_gravity(moons)
         apply_velocity(moons)
 
-        print(f"After {step} steps:")
-        print_moons(moons)
-        print()
+        x, y, z = tupleize(moons)
+        done = record_history(history, x, y, z)
 
-    print('p1:', sum(map(energy, moons)))
+#       print(f"After {step} steps:")
+#       print_moons(moons)
+#       print()
+
+        if step == 1000:
+            print('p1:', sum(map(energy, moons)))
+
+    print('p2:', math.lcm(*tuple(len(s) for s in history.values())))
 
 
 if __name__ == "__main__":
