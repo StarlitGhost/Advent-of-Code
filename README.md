@@ -129,7 +129,7 @@ My solutions to the yearly Advents of Code
   <img src=".aoc_tiles/tiles/2022/15.png" width="161px">
 </a>
 <h1 align="center">
-  2019 - 23 ⭐
+  2019 - 24 ⭐
 </h1>
 <a href="2019/1/script.py">
   <img src=".aoc_tiles/tiles/2019/01.png" width="161px">
