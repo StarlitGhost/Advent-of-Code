@@ -56,6 +56,21 @@ def main():
     ore = ore_for_n_fuel(1, reactions)
     print('p1:', ore)
 
+    # binary search the amount of fuel we can make without going over 1e12 ore
+    low = 1
+    high = 1e12
+    while low < high - 1:
+        test = (low + high) // 2
+        ore = ore_for_n_fuel(test, reactions)
+        if ore > 1e12:
+            high = test
+        elif ore < 1e12:
+            low = test
+        else:
+            low = test
+            break
+    print('p2:', int(low))
+
 
 if __name__ == "__main__":
     main()
