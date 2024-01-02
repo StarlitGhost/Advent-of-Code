@@ -84,6 +84,9 @@ def bfs(start: tuple, grid: Grid):
                 continue
             visited.add(new_pos)
             frontier.append(path + [new_pos])
+
+    # the last path to finish will be the longest,
+    # and therefore gives us our oxygen spread time
     return path
 
 
