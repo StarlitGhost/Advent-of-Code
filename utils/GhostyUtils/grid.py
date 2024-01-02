@@ -12,6 +12,25 @@ class Grid:
         self._width = len(self.grid[0])
         self._height = len(self.grid)
 
+    @staticmethod
+    def from_sparse(data: dict[tuple, Any], empty: Any = None) -> 'Grid':
+        tl = Vec2(min(data.keys(), key=lambda k: k[0])[0],
+                  min(data.keys(), key=lambda k: k[1])[1])
+        br = Vec2(max(data.keys(), key=lambda k: k[0])[0],
+                  max(data.keys(), key=lambda k: k[1])[1])
+        width = br.x - tl.x + 1
+        height = br.y - tl.y + 1
+        grid_list = []
+        for y in range(height):
+            grid_list.append([])
+            for x in range(width):
+                coord = (x + tl.x, y + tl.y)
+                value = data[coord] if coord in data else empty
+                grid_list[y].append(value)
+        grid = Grid(grid_list)
+        grid._offset = tl
+        return grid
+
     def width(self) -> int:
         return self._width
 
@@ -60,7 +79,7 @@ class Grid:
         if type(position) is tuple:
             position = Vec2(position)
         return ((0 <= position.x < self._width) and
-                (0 <= position.y < self._height))
+    (0 <= position.y < self._height))
 
     def neighbours(self, position: Vec2, *, diagonal: bool = True, connects: Callable = None):
         if type(position) is tuple:
@@ -87,6 +106,7 @@ class Grid:
             for o in reversed(overlays):
                 if pos in o and s is None:
                     s = str(o[pos])
+                    break
             if s is None:
                 s = str(obj)
             return s
