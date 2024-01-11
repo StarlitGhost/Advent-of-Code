@@ -3,7 +3,7 @@ My solutions to the yearly Advents of Code
 
 <!-- AOC TILES BEGIN -->
 <h1 align="center">
-  Advent of Code - 158/450 ⭐
+  Advent of Code - 161/450 ⭐
 </h1>
 <h1 align="center">
   2023 - 47 ⭐
@@ -132,7 +132,7 @@ My solutions to the yearly Advents of Code
   <img src=".aoc_tiles/tiles/2022/15.png" width="161px">
 </a>
 <h1 align="center">
-  2019 - 31 ⭐
+  2019 - 34 ⭐
 </h1>
 <a href="2019/1/script.py">
   <img src=".aoc_tiles/tiles/2019/01.png" width="161px">
@@ -181,6 +181,9 @@ My solutions to the yearly Advents of Code
 </a>
 <a href="2019/16/script.py">
   <img src=".aoc_tiles/tiles/2019/16.png" width="161px">
+</a>
+<a href="2019/17/script.py">
+  <img src=".aoc_tiles/tiles/2019/17.png" width="161px">
 </a>
 <h1 align="center">
   2015 - 50 ⭐
