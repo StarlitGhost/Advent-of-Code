@@ -70,10 +70,13 @@ def test_unit():
     assert abs(Vec2(98, -34).unit()) == 1.0
 
 
-def test_dir():
+def test_dir_values():
     assert Dir.UP is Dir.NORTH and Dir.UP == Dir.NORTH
     assert Dir.UP is not Dir.SOUTH
     assert Dir.NORTH.value == (0, -1) == Vec2(0, -1) == Vec2(Dir.NORTH)
+
+
+def test_dir_map():
     assert Dir.map_udlr('^v<>') == {
         '^': Dir.UP,
         'v': Dir.DOWN,
@@ -86,8 +89,16 @@ def test_dir():
         'W': Dir.WEST,
         'E': Dir.EAST,
     }
+
+
+def test_dir_flip():
     assert Dir.UP.flipped() == Dir.DOWN == Dir.SOUTH
     assert Dir.LEFT.flipped() == Dir.RIGHT == Dir.EAST
+
+
+def test_dir_turn():
+    assert Dir.UP.turn_left() == Dir.LEFT == Dir.WEST
+    assert Dir.UP.turn_right() == Dir.RIGHT == Dir.EAST
 
 
 def test_dir_vec2():

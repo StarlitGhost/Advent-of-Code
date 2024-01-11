@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Union, Sequence
 import math
+from itertools import cycle
 
 VecDataType = Union[int, float]
 VecTupleType = Union['_Vec', tuple]
@@ -252,6 +253,14 @@ class Dir(Enum):
 
     def as_tuple(self) -> tuple:
         return self.value
+
+    def turn_left(self) -> 'Dir':
+        turns = Dir.map_udlr([Dir.RIGHT, Dir.LEFT, Dir.UP, Dir.DOWN])
+        return turns[self]
+
+    def turn_right(self) -> 'Dir':
+        turns = Dir.map_udlr([Dir.LEFT, Dir.RIGHT, Dir.DOWN, Dir.UP])
+        return turns[self]
 
 
 def manhattan_distance(start: VecTupleType, end: VecTupleType) -> int:
