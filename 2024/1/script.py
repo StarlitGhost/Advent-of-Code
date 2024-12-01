@@ -1,4 +1,5 @@
 from GhostyUtils import aoc
+from collections import Counter
 
 
 def main():
@@ -13,6 +14,10 @@ def main():
 
     distances = [abs(l-r) for l, r in zip(sorted(left), sorted(right))]
     print("p1:", sum(distances))
+
+    rightCounts = Counter(right)
+    similarity = [l * rightCounts[l] for l in left]
+    print("p2:", sum(similarity))
 
 
 if __name__ == "__main__":
