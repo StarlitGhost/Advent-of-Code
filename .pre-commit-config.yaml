@@ -1,6 +1,6 @@
 repos:
     - repo: https://github.com/LiquidFun/aoc_tiles
-      rev: 0.5.5
+      rev: 0.6.2
       hooks:
         - id: aoc-tiles
           # Optionally use these arguments. Auto add tiles to git adds the tiles to git,
@@ -12,7 +12,7 @@ repos:
           args:
             - --auto-add-tiles-to-git=amend
             - --language-sorting=py,rs
-            - --exclude-patterns="utils/*,example*,test*"
+            - --exclude-patterns="utils/*,utils/*/*,utils/*/*/*,example*,test*"
             - --what-to-show-on-right-side=checkmark
             - --count-as-solved-when=on_leaderboard
             - --verbose
