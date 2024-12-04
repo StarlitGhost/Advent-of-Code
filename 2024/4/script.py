@@ -3,23 +3,11 @@ from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Dir, Vec2
 
 
-xmas_dirs = [
-    Dir.EAST,
-    Dir.SOUTH_EAST,
-    Dir.SOUTH,
-    Dir.SOUTH_WEST,
-    Dir.WEST,
-    Dir.NORTH_WEST,
-    Dir.NORTH,
-    Dir.NORTH_EAST,
-]
-
-
 def search_xmas(grid: Grid, pos: Vec2) -> int:
     xmas_count = 0
-    for dir_ in xmas_dirs:
-        word = [grid[pos + dir_.as_vec2() * i]
-                for i in range(4) if grid.in_bounds(pos + dir_.as_vec2() * i)]
+    for dir_ in [Dir.E, Dir.SE, Dir.S, Dir.SW, Dir.W, Dir.NW, Dir.N, Dir.NE]:
+        word = [grid[pos + Vec2(dir_) * i]
+                for i in range(4) if grid.in_bounds(pos + Vec2(dir_) * i)]
         if word == list('XMAS'):
             xmas_count += 1
             # print(pos, dir_, word)
@@ -27,8 +15,8 @@ def search_xmas(grid: Grid, pos: Vec2) -> int:
 
 
 def search_masx(grid: Grid, pos: Vec2) -> int:
-    one = sorted([grid[pos + Dir.NORTH_EAST], grid[pos + Dir.SOUTH_WEST]])
-    two = sorted([grid[pos + Dir.NORTH_WEST], grid[pos + Dir.SOUTH_EAST]])
+    one = sorted([grid[pos + Dir.NE], grid[pos + Dir.SW]])
+    two = sorted([grid[pos + Dir.NW], grid[pos + Dir.SE]])
     if one == two == list('MS'):
         return 1
     return 0
