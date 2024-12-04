@@ -38,27 +38,16 @@ def main():
     grid = Grid(aoc.read_lines())
 
     xmas_count = 0
-    for y, row in enumerate(grid):
-        for x, cell in enumerate(row):
-            if cell == 'X':
-                xmas_count += search_xmas(grid, Vec2(x, y))
-            else:
-                continue
+    for pos in grid.find_all('X'):
+        xmas_count += search_xmas(grid, Vec2(pos))
     print("p1:", xmas_count)
 
     masx_count = 0
-    for y, row in enumerate(grid):
-        # skip the top and bottom rows
-        if y in [0, grid.height() - 1]:
+    for pos in grid.find_all('A'):
+        # skip As at the edge of the grid
+        if pos[0] in [0, grid.width() - 1] or pos[1] in [0, grid.height() - 1]:
             continue
-        for x, cell in enumerate(row):
-            # skip the left and right columns
-            if x in [0, grid.width() - 1]:
-                continue
-            if cell == 'A':
-                masx_count += search_masx(grid, Vec2(x, y))
-            else:
-                continue
+        masx_count += search_masx(grid, Vec2(pos))
     print("p2:", masx_count)
 
 
