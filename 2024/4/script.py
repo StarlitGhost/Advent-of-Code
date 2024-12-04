@@ -15,6 +15,9 @@ def search_xmas(grid: Grid, pos: Vec2) -> int:
 
 
 def search_masx(grid: Grid, pos: Vec2) -> int:
+    # skip As at the edge of the grid
+    if pos.x in [0, grid.width() - 1] or pos.y in [0, grid.height() - 1]:
+        return 0
     one = sorted([grid[pos + Dir.NE], grid[pos + Dir.SW]])
     two = sorted([grid[pos + Dir.NW], grid[pos + Dir.SE]])
     if one == two == list('MS'):
@@ -25,18 +28,8 @@ def search_masx(grid: Grid, pos: Vec2) -> int:
 def main():
     grid = Grid(aoc.read_lines())
 
-    xmas_count = 0
-    for pos in grid.find_all('X'):
-        xmas_count += search_xmas(grid, Vec2(pos))
-    print("p1:", xmas_count)
-
-    masx_count = 0
-    for pos in grid.find_all('A'):
-        # skip As at the edge of the grid
-        if pos[0] in [0, grid.width() - 1] or pos[1] in [0, grid.height() - 1]:
-            continue
-        masx_count += search_masx(grid, Vec2(pos))
-    print("p2:", masx_count)
+    print("p1:", sum(search_xmas(grid, Vec2(pos)) for pos in grid.find_all('X')))
+    print("p2:", sum(search_masx(grid, Vec2(pos)) for pos in grid.find_all('A')))
 
 
 if __name__ == "__main__":
