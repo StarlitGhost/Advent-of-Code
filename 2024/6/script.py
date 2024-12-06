@@ -8,7 +8,7 @@ def move(pos: tuple, dir_: Dir, grid: Grid) -> tuple[tuple, Dir]:
 
     # out of bounds or open, return next position
     if not grid.in_bounds(next_pos) or not grid[next_pos] == '#':
-        return next_pos, dir_
+        return next_pos.as_tuple(), dir_
 
     # obstacle, rotate right 90 degrees
     else:
@@ -17,7 +17,6 @@ def move(pos: tuple, dir_: Dir, grid: Grid) -> tuple[tuple, Dir]:
 
 def main():
     grid = Grid(aoc.read_lines())
-    print(grid)
 
     pos = grid.find('^')
     dir_ = Dir.UP
@@ -26,8 +25,9 @@ def main():
     visited.add(pos)
     while grid.in_bounds(pos):
         pos, dir_ = move(pos, dir_, grid)
-        visited.add(pos.as_tuple())
+        visited.add(pos)
 
+    print(grid.render_with_overlays([{pos: 'X' for pos in visited}]))
     print("p1:", len(visited) - 1)
 
 
