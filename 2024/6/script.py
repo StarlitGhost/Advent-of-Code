@@ -3,9 +3,14 @@ from GhostyUtils.grid import Grid
 from GhostyUtils.vec2 import Vec2, Dir
 
 
-def move(pos: Vec2, dir_: Dir, grid: Grid) -> tuple[Vec2, Dir]:
-    if not grid.in_bounds(pos + Vec2(dir_)) or not grid[pos + Vec2(dir_)] == '#':
-        return pos + Vec2(dir_), dir_
+def move(pos: tuple, dir_: Dir, grid: Grid) -> tuple[tuple, Dir]:
+    next_pos = pos + Vec2(dir_)
+
+    # out of bounds or open, return next position
+    if not grid.in_bounds(next_pos) or not grid[next_pos] == '#':
+        return next_pos, dir_
+
+    # obstacle, rotate right 90 degrees
     else:
         return pos, dir_.turn_right()
 
