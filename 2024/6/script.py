@@ -27,13 +27,16 @@ def simulate(pos: tuple, dir_: Dir, grid: Grid) -> tuple[set, list, bool]:
     while grid.in_bounds(pos):
         pos, dir_ = move(pos, dir_, grid)
         visited.add(pos)
+        # we changed direction
         if path[-1][0] == pos:
             path.append((pos, dir_))
             path.append((pos, None))
             path_set.add((pos, dir_))
+        # we're following a previous path, loop found
         elif (pos, dir_) in path_set:
             loops = True
             break
+        # we just moved forward
         else:
             path.append((pos, dir_))
             path_set.add((pos, dir_))
