@@ -20,6 +20,8 @@ def simulate(pos: tuple, dir_: Dir, grid: Grid) -> tuple[set, list, bool]:
     visited.add(pos)
     path = []
     path.append((pos, dir_))
+    path_set = set()
+    path_set.add((pos, dir_))
     loops = False
 
     while grid.in_bounds(pos):
@@ -28,11 +30,13 @@ def simulate(pos: tuple, dir_: Dir, grid: Grid) -> tuple[set, list, bool]:
         if path[-1][0] == pos:
             path.append((pos, dir_))
             path.append((pos, None))
-        elif (pos, dir_) in path:
+            path_set.add((pos, dir_))
+        elif (pos, dir_) in path_set:
             loops = True
             break
         else:
             path.append((pos, dir_))
+            path_set.add((pos, dir_))
 
     return visited, path, loops
 
