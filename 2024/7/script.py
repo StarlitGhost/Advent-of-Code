@@ -12,6 +12,11 @@ def calibrate(target: int, operands: list[int], operators: list[Callable]) -> in
         for i, op in enumerate(ops):
             result = op(result, operands[i+1])
 
+            # ops only make the result larger,
+            # so abort if result is already larger than target
+            if result > target:
+                break
+
         # print(f"{target}: {operands} -> {result} | {ops}")
 
         # return early if we find a calculation that works
