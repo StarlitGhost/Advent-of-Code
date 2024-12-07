@@ -1,0 +1,42 @@
+from GhostyUtils import aoc
+import operator
+import itertools
+
+
+def calibrate(target, operands, operators) -> int:
+    for ops in itertools.product(operators, repeat=len(operands)-1):
+        result = operands[0]
+        for i, op in enumerate(ops):
+            result = op(result, operands[i+1])
+
+        # print(f"{target}: {operands} -> {result} | {ops}")
+
+        if result == target:
+            return target
+    return 0
+
+
+def concat(l: int, r: int) -> int:
+    return int(f"{l}{r}")
+
+
+def main():
+    inputs = aoc.read_lines()
+
+    total = 0
+    p2total = 0
+    for line in inputs:
+        target, operands = line.split(': ')
+        target = int(target)
+        operands = list(map(int, operands.split(' ')))
+
+        result = calibrate(target, operands, [operator.add, operator.mul])
+        total += result
+        if result == 0:
+            p2total += calibrate(target, operands, [operator.add, operator.mul, concat])
+    print(f"p1: {total}")
+    print(f"p2: {total+p2total}")
+
+
+if __name__ == "__main__":
+    main()
