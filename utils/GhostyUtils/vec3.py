@@ -1,21 +1,25 @@
-from GhostyUtils.vec2 import _Vec, VecDataType
+from GhostyUtils.vec2 import _Vec, VecDataType, Vec2
 from typing import Union
 
 
 class Vec3(_Vec):
     def __init__(self,
-                 x: Union[VecDataType, tuple],
+                 x: Union[VecDataType, tuple, 'Vec3'],
                  y: VecDataType = None,
                  z: VecDataType = None) -> None:
         if y is None:
             if type(x) in [tuple, list] and len(x) == 3:
                 self._data = list(x)
+            elif type(x) is Vec3:
+                self._data = x._data.copy()
             else:
                 raise ValueError(f"Couldn't init {type(self).__name__} with "
                                  f"{x} ({type(x)}), no y or z given")
         elif z is None:
             if type(x) in [int, float] and type(y) in [int, float]:
                 self._data = [x, y, 0]
+            elif type(x) is Vec2 and type(y) in [int, float]:
+                self._data = [x.x, x.y, y]
             else:
                 raise ValueError(f"Couldn't init {type(self).__name__} with "
                                  f"{x} ({type(x)}), "

@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Union, Sequence
 import math
-from itertools import cycle
 
 VecDataType = Union[int, float]
 VecTupleType = Union['_Vec', tuple]
@@ -175,13 +174,15 @@ class _Vec:
 
 class Vec2(_Vec):
     def __init__(self,
-                 x: Union[VecDataType, tuple, 'Dir'],
+                 x: Union[VecDataType, tuple, 'Dir', 'Vec2'],
                  y: VecDataType = None) -> None:
         if y is None:
             if type(x) in [tuple, list] and len(x) == 2:
                 self._data = list(x)
             elif type(x) is Dir:
                 self._data = list(x.value)
+            elif type(x) is Vec2:
+                self._data = x._data.copy()
             else:
                 raise ValueError(f"Couldn't init Vec2 with {x} ({type(x)}), no y given")
         elif type(x) in [int, float] and type(y) in [int, float]:
