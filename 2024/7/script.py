@@ -1,10 +1,10 @@
 from GhostyUtils import aoc
 import operator
 import itertools
-from typing import Iterable, Callable
+from typing import Callable
 
 
-def calibrate(target: int, operands: list[int], operators: Iterable[Callable]) -> int:
+def calibrate(target: int, operands: list[int], operators: list[Callable]) -> int:
     # try all operators in all positions between operands
     for ops in itertools.product(operators, repeat=len(operands)-1):
         # calculate left-to-right
@@ -45,7 +45,7 @@ def main():
             p2total += calibrate(target, operands, [operator.add, operator.mul, concat])
 
     print(f"p1: {total}")
-    print(f"p2: {total+p2total}")
+    print(f"p2: {total + p2total}")
 
 
 if __name__ == "__main__":
