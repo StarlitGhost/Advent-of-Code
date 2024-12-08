@@ -1,12 +1,27 @@
-import sys
+import argparse
 from typing import Iterable
+
+_parser = argparse.ArgumentParser()
+_parser.add_argument('filename', nargs='?', default='input', help="the input filename")
+_parser.add_argument('-v', action='store_true', help="verbose output")
+_args = None
+
+
+def argparser():
+    global _parser
+    return _parser
+
+
+def args():
+    global _args
+    return _args
 
 
 def _get_filename(file: str) -> str:
-    if len(sys.argv) > 1:
-        return sys.argv[1]
-    else:
-        return 'input'
+    global _args
+    global _parser
+    _args = _parser.parse_args()
+    return _args.filename
 
 
 def _generator(file: str = None):
