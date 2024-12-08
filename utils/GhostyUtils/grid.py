@@ -55,7 +55,8 @@ class Grid:
                 row.extend(fill for _ in range(pos.x + 1 - self._width))
             self._width = pos.x + 1
         if pos.y >= self._height:
-            self.grid.extend([fill for _ in range(self._width)] for _ in range(pos.y + 1 - self._height))
+            self.grid.extend([fill for _ in range(self._width)]
+                             for _ in range(pos.y + 1 - self._height))
             self._height = pos.y + 1
 
     def by_rows(self, *, reverse: bool = False) -> Iterable[Sequence]:
@@ -68,6 +69,11 @@ class Grid:
         for col in (zip(*self.grid) if not reverse else reversed(list(zip(*self.grid)))):
             yield col
 
+    def by_cell(self) -> Iterable[tuple[Any, tuple]]:
+        for y, row in enumerate(self.grid):
+            for x, element in enumerate(row):
+                yield element, (x, y)
+
     def transposed(self) -> 'Grid':
         return Grid(list(zip(*self.grid)))
 
@@ -79,7 +85,7 @@ class Grid:
         if type(position) is tuple:
             position = Vec2(position)
         return ((0 <= position.x < self._width) and
-    (0 <= position.y < self._height))
+                (0 <= position.y < self._height))
 
     def neighbours(self, position: Vec2, *, diagonal: bool = True, connects: Callable = None):
         if type(position) is tuple:
