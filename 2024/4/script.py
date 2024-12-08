@@ -6,11 +6,14 @@ from GhostyUtils.vec2 import Dir, Vec2
 def search_xmas(grid: Grid, pos: Vec2) -> int:
     xmas_count = 0
     for dir_ in [Dir.E, Dir.SE, Dir.S, Dir.SW, Dir.W, Dir.NW, Dir.N, Dir.NE]:
-        word = [grid[pos + Vec2(dir_) * i]
-                for i in range(4) if grid.in_bounds(pos + Vec2(dir_) * i)]
+        letter_positions = [pos + Vec2(dir_) * i
+                            for i in range(4)
+                            if grid.in_bounds(pos + Vec2(dir_) * i)]
+        word = [grid[letter_pos] for letter_pos in letter_positions]
         if word == list('XMAS'):
             xmas_count += 1
-            # print(pos, dir_, word)
+            if aoc.args().verbose:
+                print(f"{pos} {dir_} {word}")
     return xmas_count
 
 
