@@ -54,7 +54,7 @@ def main():
     for antenna, positions in antennas.items():
         for combo in combinations(positions, 2):
             antinode_positions.update(calc_antinodes(*combo, grid))
-    if aoc.args().v:
+    if aoc.args().verbose:
         print(grid.render_with_overlays([{pos: '#' for pos in antinode_positions},
                                          {p: freq for freq, pos in antennas.items() for p in pos}]))
     print(f"p1: {len(antinode_positions)}")
@@ -63,7 +63,7 @@ def main():
     for antenna, positions in antennas.items():
         for combo in combinations(positions, 2):
             antinode_positions.update(calc_antinodes(*combo, grid, resonates=True))
-    if aoc.args().v:
+    if aoc.args().verbose:
         print(grid.render_with_overlays([{pos: '#' for pos in antinode_positions},
                                          {p: freq for freq, pos in antennas.items() for p in pos}]))
     print(f"p2: {len(antinode_positions)}")
