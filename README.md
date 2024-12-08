@@ -29,7 +29,7 @@ My solutions to the yearly Advents of Code
 <a href="2024/7/script.py">
   <img src=".aoc_tiles/tiles/2024/07.png" width="161px">
 </a>
-<a href="None">
+<a href="2024/8/script.py">
   <img src=".aoc_tiles/tiles/2024/08.png" width="161px">
 </a>
 <h1 align="center">
