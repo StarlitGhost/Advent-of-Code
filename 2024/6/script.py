@@ -64,10 +64,9 @@ def main():
 
     visited, path, _ = simulate(start_pos, dir_, grid)
 
-    # print(grid.render_with_overlays([{pos: 'X' for pos in visited}]))
-    # print("p1:", len(visited) - 1)
-
-    # print_path(grid, path, start_pos)
+    if aoc.args().verbose:
+        print(grid.render_with_overlays([{pos: 'X' for pos in visited}]))
+        print("p1:", len(visited) - 1)
 
     loop_obstacles = set()
     tried_obstacles = set()
@@ -93,13 +92,16 @@ def main():
         # track obstacles that cause loops
         if loops:
             loop_obstacles.add(pos)
-            # print_path(grid, new_path, new_start_pos)
-            print(f"{i}/{len(path)} {len(loop_obstacles)}")
+            if aoc.args().verbose:
+                print_path(grid, new_path, new_start_pos)
+            if aoc.args().progress or aoc.args().verbose:
+                print(f"{i}/{len(path)} {len(loop_obstacles)}")
 
         # remove the current obstacle so we can try the next one
         grid[pos] = '.'
 
-    print("p1:", len(visited) - 1)
+    if not aoc.args().verbose:
+        print("p1:", len(visited) - 1)
     print("p2:", len(loop_obstacles))
 
 
