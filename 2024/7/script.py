@@ -17,7 +17,8 @@ def calibrate(target: int, operands: list[int], operators: list[Callable]) -> in
             if result > target:
                 break
 
-        # print(f"{target}: {operands} -> {result} | {ops}")
+        if aoc.args().verbose:
+            print(f"{target}: {operands} | {ops} -> {result}")
 
         # return early if we find a calculation that works
         if result == target:
