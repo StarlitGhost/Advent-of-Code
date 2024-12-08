@@ -3,7 +3,7 @@ from typing import Iterable
 
 _parser = argparse.ArgumentParser()
 _parser.add_argument('filename', nargs='?', default='input', help="the input filename")
-_parser.add_argument('-v', action='store_true', help="verbose output")
+_parser.add_argument('-v', '--verbose', action='store_true', help="verbose output")
 _args = None
 
 
