@@ -13,8 +13,9 @@ def find_middle(page_order, rule_map) -> int:
     for page in page_order:
         pages = rule_map[page].intersection(set(page_order))
         if len(pages) == len(page_order)//2:
+            if aoc.args().verbose:
+                print(f"{page} | {page_order} {pages}")
             return page
-        # print(page_order, page, rule_map[page], pages)
 
 
 def main():
