@@ -93,7 +93,7 @@ def compact(filesystem: list) -> list:
 
         # find a large enough block of free space left of the current block
         for index, check_block in enumerate(new_fs[:cur_index]):
-            # skip files and blocks of free space that aren't large enough
+            # skip data blocks and blocks of free space that aren't large enough
             if check_block.id != '.' or check_block.size < block.size:
                 continue
 
