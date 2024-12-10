@@ -8,13 +8,25 @@ _parser.add_argument('-p', '--progress', action='store_true', help="progress out
 _args = None
 
 
-def argparser():
+def __getattr__(name):
+    properties = {
+        'argparser': _argparser,
+        'args': _get_args,
+    }
+    if name in properties:
+        return properties[name]()
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+def _argparser():
     global _parser
     return _parser
 
 
-def args():
+def _get_args():
     global _args
+    if _args is None:
+        _args = _parser.parse_args()
     return _args
 
 
