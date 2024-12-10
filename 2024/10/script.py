@@ -1,6 +1,6 @@
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
-from GhostyUtils.pathfinding import dfs
+from GhostyUtils.pathfinding import bfs
 import functools
 
 
@@ -27,7 +27,7 @@ def main():
     total_rating = 0
     for trailhead in grid.find_all(0):
         ends = set()
-        for path in dfs(start=trailhead, end=None, all_paths=True,
+        for path in bfs(start=trailhead, end=None, all_paths=True,
                         neighbours=neighbours, early_out=early_out):
             ends.add(path[-1])
             total_rating += 1
