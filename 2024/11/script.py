@@ -4,6 +4,10 @@ from functools import cache
 from collections import Counter, defaultdict
 
 
+aoc.argparser.add_argument("-n", "--num_blinks", default=0, type=int,
+                           help="number of times to blink")
+
+
 @cache
 def num_digits(value: int) -> int:
     return int(math.log10(value)) + 1
@@ -47,6 +51,11 @@ def main():
     start_stones = Counter([int(stone) for stone in aoc.read().split()])
     if aoc.args.verbose:
         print(start_stones)
+
+    if aoc.args.num_blinks > 0:
+        stones = blink_n_times(start_stones, aoc.args.num_blinks)
+        print(f"{aoc.args.num_blinks} blinks: {sum(stones.values())}")
+        exit(0)
 
     stones = blink_n_times(start_stones, 25)
     print(f"p1: {sum(stones.values())}")
