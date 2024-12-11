@@ -1,9 +1,21 @@
 from GhostyUtils import aoc
 import math
+from functools import cache
+from collections import Counter
 
 
+@cache
 def num_digits(value: int) -> int:
     return int(math.log10(value)) + 1
+
+
+@cache
+def split(value: int) -> tuple[int, int]:
+    digits = num_digits(value)
+    tens_place = 10 ** (digits//2)
+    l_value = value // tens_place
+    r_value = value - (l_value * tens_place)
+    return (l_value, r_value)
 
 
 def blink(stones: list[int]) -> list[int]:
@@ -12,11 +24,7 @@ def blink(stones: list[int]) -> list[int]:
         if stone == 0:
             new_stones.append(1)
         elif num_digits(stone) % 2 == 0:
-            digits = num_digits(stone)
-            um = 10 ** (digits//2)
-            l_stone = stone // um
-            r_stone = stone - (l_stone * um)
-            new_stones += [l_stone, r_stone]
+            new_stones.extend(split(stone))
         else:
             new_stones.append(stone * 2024)
 
