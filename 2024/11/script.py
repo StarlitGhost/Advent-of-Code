@@ -43,20 +43,16 @@ def blink_n_times(stones: dict[int, int], n: int) -> dict[int, int]:
     return stones
 
 
-def num_stones(stones: dict[int, int]) -> int:
-    return sum(stones.values())
-
-
 def main():
     start_stones = Counter([int(stone) for stone in aoc.read().split()])
     if aoc.args.verbose:
         print(start_stones)
 
     stones = blink_n_times(start_stones, 25)
-    print(f"p1: {num_stones(stones)}")
+    print(f"p1: {sum(stones.values())}")
 
     stones = blink_n_times(start_stones, 75)
-    print(f"p2: {num_stones(stones)}")
+    print(f"p2: {sum(stones.values())}")
 
 
 if __name__ == "__main__":
