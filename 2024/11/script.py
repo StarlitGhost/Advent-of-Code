@@ -49,6 +49,15 @@ def blink_n_times(stones: dict[int, int], n: int) -> dict[int, int]:
     return stones
 
 
+def print_cache_info():
+    num_digits_cache = num_digits.cache_info()
+    split_cache = split.cache_info()
+    print(f"num_digits: {num_digits_cache.hits} hits, {num_digits_cache.misses} misses")
+    print(f"split: {split_cache.hits} hits, {split_cache.misses} misses")
+    num_digits.cache_clear()
+    split.cache_clear()
+
+
 def main():
     start_stones = Counter([int(stone) for stone in aoc.read().split()])
     if aoc.args.verbose:
@@ -59,8 +68,7 @@ def main():
         print(f"{aoc.args.num_blinks} blinks: {sum(stones.values())}")
 
         if aoc.args.cache_info:
-            print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
-            print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
+            print_cache_info()
 
         exit(0)
 
@@ -68,17 +76,13 @@ def main():
     print(f"p1: {sum(stones.values())}")
 
     if aoc.args.cache_info:
-        print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
-        print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
-        num_digits.cache_clear()
-        split.cache_clear()
+        print_cache_info()
 
     stones = blink_n_times(start_stones, 75)
     print(f"p2: {sum(stones.values())}")
 
     if aoc.args.cache_info:
-        print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
-        print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
+        print_cache_info()
 
 
 if __name__ == "__main__":
