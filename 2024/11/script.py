@@ -44,7 +44,7 @@ def blink_n_times(stones: dict[int, int], n: int) -> dict[int, int]:
 
 
 def num_stones(stones: dict[int, int]) -> int:
-    return sum(count for _, count in stones.items())
+    return sum(stones.values())
 
 
 def main():
