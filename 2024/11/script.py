@@ -17,8 +17,7 @@ def num_digits(value: int) -> int:
 
 @cache
 def split(value: int) -> tuple[int, int]:
-    digits = num_digits(value)
-    tens_place = 10 ** (digits//2)
+    tens_place = 10 ** (num_digits(value) // 2)
     l_value = value // tens_place
     r_value = value - (l_value * tens_place)
     return (l_value, r_value)
