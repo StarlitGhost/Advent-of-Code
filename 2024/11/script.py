@@ -10,7 +10,6 @@ aoc.argparser.add_argument("-c", "--cache_info", action="store_true",
                            help="output cache info")
 
 
-@cache
 def num_digits(value: int) -> int:
     return int(math.log10(value)) + 1
 
@@ -49,11 +48,9 @@ def blink_n_times(stones: dict[int, int], n: int) -> dict[int, int]:
 
 
 def print_cache_info():
-    num_digits_cache = num_digits.cache_info()
     split_cache = split.cache_info()
-    print(f"num_digits: {num_digits_cache.hits} hits, {num_digits_cache.misses} misses")
-    print(f"split: {split_cache.hits} hits, {split_cache.misses} misses")
-    num_digits.cache_clear()
+    print(f"split: {split_cache.hits} hits, {split_cache.misses} misses"
+          f" | {split_cache.hits / (split_cache.hits + split_cache.misses) * 100:.1f}% hit rate")
     split.cache_clear()
 
 
