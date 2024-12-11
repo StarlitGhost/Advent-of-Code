@@ -6,6 +6,8 @@ from collections import Counter, defaultdict
 
 aoc.argparser.add_argument("-n", "--num_blinks", default=0, type=int,
                            help="number of times to blink")
+aoc.argparser.add_argument("-c", "--cache_info", action="store_true",
+                           help="output cache info")
 
 
 @cache
@@ -55,13 +57,28 @@ def main():
     if aoc.args.num_blinks > 0:
         stones = blink_n_times(start_stones, aoc.args.num_blinks)
         print(f"{aoc.args.num_blinks} blinks: {sum(stones.values())}")
+
+        if aoc.args.cache_info:
+            print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
+            print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
+
         exit(0)
 
     stones = blink_n_times(start_stones, 25)
     print(f"p1: {sum(stones.values())}")
 
+    if aoc.args.cache_info:
+        print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
+        print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
+        num_digits.cache_clear()
+        split.cache_clear()
+
     stones = blink_n_times(start_stones, 75)
     print(f"p2: {sum(stones.values())}")
+
+    if aoc.args.cache_info:
+        print(f"num_digits: {num_digits.cache_info().hits} hits, {num_digits.cache_info().misses} misses")
+        print(f"split: {split.cache_info().hits} hits, {split.cache_info().misses} misses")
 
 
 if __name__ == "__main__":
