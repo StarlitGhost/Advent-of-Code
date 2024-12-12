@@ -57,7 +57,7 @@ def main():
     stones = blink_n_times(start_stones, 25)
     print(f"p1: {sum(stones.values())}")
 
-    stones = blink_n_times(start_stones, 75)
+    stones = blink_n_times(stones, 50)
     print(f"p2: {sum(stones.values())}")
 
 

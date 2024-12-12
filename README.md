@@ -3,7 +3,7 @@ My solutions to the yearly Advents of Code
 
 <!-- AOC TILES BEGIN -->
 <h1 align="center">
-  Advent of Code - 183/472 ⭐
+  Advent of Code - 183/474 ⭐
 </h1>
 <h1 align="center">
   2024 - 22 ⭐ - Python
