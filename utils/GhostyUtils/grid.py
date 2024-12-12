@@ -135,23 +135,33 @@ class Grid:
         self.grid[key[1]][key[0]] = value
 
     def flood_fill(self, pos: Vec2, fill: Any, inside: Callable) -> None:
-        """combined-scan-and-fill span filler"""
-        """from https://en.wikipedia.org/wiki/Flood_fill#Span_filling"""
         if not inside(Vec2.from_tuple(pos)):
             return
+
+        for cell in self.flood_find(pos, inside):
+            self[pos] = fill
+
+    """combined-scan-and-fill span filler"""
+    """from https://en.wikipedia.org/wiki/Flood_fill#Span_filling"""
+    def flood_find(self, pos: Vec2, fill: Any, inside: Callable) -> list[Vec2]:
+        if not inside(Vec2.from_tuple(pos)):
+            return []
+
+        flood_cells = []
+
         s = [(pos[0], pos[0], pos[1], 1), (pos[0], pos[0], pos[1] - 1, -1)]
         while s:
             x1, x2, y, dy = s.pop(0)
             x = x1
             if inside(Vec2(x, y)):
                 while inside(Vec2(x - 1, y)):
-                    self[x-1, y] = fill
+                    flood_cells.append(Vec2(x-1, y))
                     x -= 1
                 if x < x1:
                     s.append((x, x1 - 1, y - dy, -dy))
             while x1 <= x2:
                 while inside(Vec2(x1, y)):
-                    self[x1, y] = fill
+                    flood_cells.append(Vec2(x1, y))
                     x1 += 1
                 if x1 > x:
                     s.append((x, x1 - 1, y + dy, dy))
@@ -161,3 +171,25 @@ class Grid:
                 while x1 < x2 and not inside(Vec2(x1, y)):
                     x1 += 1
                 x = x1
+
+        return flood_cells
+
+    def bfs_flood_find(self, start: Vec2, search: Any = None) -> set[tuple]:
+        visited = set()
+        frontier = [Vec2(start).as_tuple()]
+        visited.add(frontier[0])
+
+        while frontier:
+            pos = frontier.pop(0)
+
+            for next_pos in self.neighbours(pos, diagonal=False):
+                if next_pos in visited:
+                    continue
+
+                if self[next_pos] != search:
+                    continue
+
+                frontier.append(next_pos)
+                visited.add(next_pos)
+
+        return visited
