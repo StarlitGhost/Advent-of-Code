@@ -2,7 +2,7 @@ from GhostyUtils import aoc
 from GhostyUtils.vec2 import Vec2
 
 
-def solve(machine: list[list[tuple], tuple], offset: int = 0):
+def solve(machine: list[list[tuple], tuple], offset: int = 0) -> int:
     a, b = [Vec2(button) for button in machine[0]]
     p = Vec2(machine[1]) + Vec2(offset, offset)
 
@@ -30,7 +30,7 @@ def main():
     machines = []
     for mch in inputs:
         mch = mch.splitlines()
-        buttons = [tuple(int(coord[2:])
+        buttons = [tuple(int(coord[1:])
                          for coord in btn.split(': ')[1].split(', '))
                    for btn in mch[:2]]
         prize = tuple(int(coord[2:]) for coord in mch[2].split(': ')[1].split(', '))
