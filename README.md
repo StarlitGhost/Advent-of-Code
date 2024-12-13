@@ -3,10 +3,10 @@ My solutions to the yearly Advents of Code
 
 <!-- AOC TILES BEGIN -->
 <h1 align="center">
-  Advent of Code - 184/474 ⭐
+  Advent of Code - 185/476 ⭐
 </h1>
 <h1 align="center">
-  2024 - 23 ⭐ - Python
+  2024 - 24 ⭐ - Python
 </h1>
 <a href="2024/1/script.py">
   <img src=".aoc_tiles/tiles/2024/01.png" width="161px">
