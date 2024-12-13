@@ -18,21 +18,24 @@ def neighbours(pos: Vec2) -> list[Vec2]:
 
 
 def perimeter(region: set[tuple]) -> int:
-    p = 0
-    for pos in region:
-        p += sum(n not in region for n in neighbours(pos))
-    return p
+    # for each position in the region,
+    # count how many of its neighbours are outside the region
+    return sum(n not in region for pos in region for n in neighbours(pos))
 
 
 def sides(region: set[tuple]) -> int:
+    # gather fences by the direction they are facing
     fences = defaultdict(list)
     for pos in region:
         for n, d in Dir.map_nswe(neighbours(pos)).items():
             if n not in region:
                 fences[d].append(pos)
+
+    # sort fences by y coord if facing north/south, or x coord for east/west
     for d, fs in fences.items():
         fences[d] = sorted(fs, key=lambda f: f[::-1] if d in {Dir.N, Dir.S} else f)
 
+    # calculate the number of distinct sides facing each direction
     num_sides = 0
     dirmap = {
         Dir.N: Dir.E,
@@ -43,6 +46,8 @@ def sides(region: set[tuple]) -> int:
     for d, fs in fences.items():
         num_sides += 1
         for f1, f2 in zip(fs, fs[1:]):
+            # if two fences in the list aren't directly next to each other,
+            # we found a new side
             if (Vec2(f1) + dirmap[d]).as_tuple() != f2:
                 num_sides += 1
 
