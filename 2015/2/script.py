@@ -20,4 +20,5 @@ if __name__ == '__main__':
         ribbon = wrap + bow
         total_ribbon += ribbon
 
-    print(total_paper, total_ribbon)
+    print(total_paper)
+    print(total_ribbon)

@@ -32,4 +32,5 @@ if __name__ == '__main__':
         else:
             p2_grid[house] += 1
 
-    print(len(p1_grid), len(p2_grid))
+    print(len(p1_grid))
+    print(len(p2_grid))
