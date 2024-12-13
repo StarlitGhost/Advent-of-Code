@@ -69,10 +69,10 @@ for idx, pair in enumerate(pairs):
     # print(f'== Pair {idx+1} ==')
     if compare(one, two) in [-1]:
         valid_pairs.append(idx+1)
-    print()
+    # print()
     packets += [one, two]
 
-print(f'Valid: {valid_pairs} {sum(valid_pairs)}')
+print(f'{sum(valid_pairs)} | Valid: {valid_pairs}')
 
 sorted_packets = sorted(packets, key=functools.cmp_to_key(compare))
 # for packet in sorted_packets:
