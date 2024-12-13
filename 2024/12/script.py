@@ -28,6 +28,7 @@ def sides(region: set[tuple]) -> int:
     fences = defaultdict(list)
     for pos in region:
         for n, d in Dir.map_nswe(neighbours(pos)).items():
+            # no same-region neighbour in this direction, we found a fence
             if n not in region:
                 fences[d].append(pos)
 
