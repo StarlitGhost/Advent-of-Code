@@ -60,6 +60,7 @@ def row_coverage(intersections):
 if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
+
     pairs = []
 
     for line in inputs:
@@ -74,7 +75,8 @@ if __name__ == '__main__':
     start = timer()
 
     beacons = set(b for _, b in pairs)
-    intersections = scan(int(sys.argv[2]), pairs)
+    scan_row = int(sys.argv[2]) if len(sys.argv) >= 3 else 2000000
+    intersections = scan(scan_row, pairs)
     covered = row_coverage(intersections)
     covered -= beacons
 
@@ -82,7 +84,7 @@ if __name__ == '__main__':
 
     print(f'part 1: {len(covered)} {end-start:.6f} seconds')
 
-    max_coord = int(sys.argv[3])
+    max_coord = int(sys.argv[3]) if len(sys.argv) >= 4 else 4000000
 
     start = timer()
 
