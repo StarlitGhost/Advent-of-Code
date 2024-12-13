@@ -60,7 +60,6 @@ def row_coverage(intersections):
 if __name__ == '__main__':
     inputs = (line.rstrip('\n') for line in open(sys.argv[1]))
 
-
     pairs = []
 
     for line in inputs:
