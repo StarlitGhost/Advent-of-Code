@@ -1,5 +1,5 @@
 from GhostyUtils import aoc
-from GhostyUtils.vec2 import Vec2
+from GhostyUtils.vec2 import Vec2, Dir
 from GhostyUtils.grid import Grid
 from collections import Counter
 import math
@@ -94,18 +94,24 @@ def main():
     most_horz_robots = 0
     best_second = 0
     for s in range(aoc.args.seconds, dimensions.x * dimensions.y):
-        horz_robots = [0] * dimensions.y
         for robot in robots:
             robot.step(grid)
-            horz_robots[robot.pos.y] += 1
 
-        if max(horz_robots) > most_horz_robots:
-            most_horz_robots = max(horz_robots)
-            best_second = s
+        robots.sort(key=lambda robot: robot.pos.as_tuple()[::-1])
+        horz_robots = 1
+        for r1, r2 in zip(robots, robots[1:]):
+            if r1.pos + Dir.RIGHT == r2.pos:
+                horz_robots += 1
+            else:
+                if horz_robots > most_horz_robots:
+                    most_horz_robots = horz_robots
+                    best_second = s+1
+                horz_robots = 1
+
         if aoc.args.progress or aoc.args.verbose:
             render_robots(robots, grid, seconds=s+1)
 
-    print(f"p2: {best_second} {most_horz_robots}")
+    print(f"p2: {best_second}")
 
 
 if __name__ == "__main__":
