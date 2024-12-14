@@ -39,12 +39,27 @@ def process_move_multiple(move, stacks):
     from_ = int(from_)
     to = int(to)
     stacks[to].extend(stacks[from_][-num:])
-    print(from_, stacks[from_][-num:], to)
+    # print(from_, stacks[from_][-num:], to)
     del stacks[from_][-num:]
 
 
 with open('input') as f:
-    inputs = (line.rstrip('\n') for line in f)
+    file = [line.rstrip('\n') for line in f]
+    inputs = (line for line in file)
+
+    stacks = read_stacks(inputs)
+    # print(stacks)
+
+    for move in inputs:
+        if move.strip():
+            process_move_single(move, stacks)
+    # print(stacks)
+    top_crates = [stacks[crate][-1]
+                  for crate in range(1, 9+1) if stacks[crate]]
+    # print(top_crates)
+    print(''.join(top_crates))
+
+    inputs = (line for line in file)
 
     stacks = read_stacks(inputs)
     # print(stacks)
@@ -55,5 +70,5 @@ with open('input') as f:
     # print(stacks)
     top_crates = [stacks[crate][-1]
                   for crate in range(1, 9+1) if stacks[crate]]
-    print(top_crates)
+    # print(top_crates)
     print(''.join(top_crates))
