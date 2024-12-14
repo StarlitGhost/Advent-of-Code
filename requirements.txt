@@ -1,6 +1,7 @@
 advent-of-code-data==2.0.4
 build==1.2.2
 flake8==7.1.1
+pillow==11.0.0
 pre-commit==4.0.1
 pytest==8.3.4
 pytest-runner==6.0.1
