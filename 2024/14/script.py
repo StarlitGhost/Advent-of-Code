@@ -3,6 +3,8 @@ from GhostyUtils.vec2 import Vec2
 from GhostyUtils.grid import Grid
 from collections import Counter
 import math
+import pathlib
+from PIL import Image, ImageDraw
 
 
 aoc.argparser.add_argument("-d", "--dimensions", type=str, default="101,103",
@@ -52,8 +54,15 @@ def count_quadrants(robots: list[Robot], grid: Grid) -> list[int]:
     return count
 
 
-def render_robots(robots: list[Robot], grid: Grid) -> str:
-    return grid.render_with_overlays([Counter(robot.pos.as_tuple() for robot in robots)])
+def render_robots(robots: list[Robot], grid: Grid, seconds: int):
+    image = Image.new(mode="1", size=(grid.width(), grid.height()), color=0)
+    draw = ImageDraw.Draw(image)
+    [draw.point(robot.pos.as_tuple(), fill=1) for robot in robots]
+    pathlib.Path(f"{aoc.args.filename}_robots").mkdir(parents=True, exist_ok=True)
+    image.save(f"{aoc.args.filename}_robots/{seconds}.png")
+
+    # print(grid.render_with_overlays([Counter(robot.pos.as_tuple() for robot in robots)]))
+    print(f"{seconds}/{math.prod(map(int, aoc.args.dimensions.split(',')))}")
 
 
 def main():
@@ -66,18 +75,37 @@ def main():
     dimensions = Vec2.from_str(aoc.args.dimensions, ',')
     grid = Grid(['.' * dimensions.x] * dimensions.y)
 
-    print("Initial state:")
-    print(render_robots(robots, grid))
-    print()
+    if aoc.args.progress or aoc.args.verbose:
+        print("Initial state:")
+        render_robots(robots, grid, seconds=0)
+        print()
+
     for s in range(aoc.args.seconds):
         for robot in robots:
             robot.step(grid)
 
-        print(f"After {s+1} second{'s' if s > 1 else ''}:")
-        print(render_robots(robots, grid))
-        print()
+        if aoc.args.progress or aoc.args.verbose:
+            print(f"After {s+1} second{'s' if s > 1 else ''}:")
+            render_robots(robots, grid, seconds=s+1)
+            print()
 
     print(f"p1: {math.prod(count_quadrants(robots, grid))}")
+
+    most_horz_robots = 0
+    best_second = 0
+    for s in range(aoc.args.seconds, dimensions.x * dimensions.y):
+        horz_robots = [0] * dimensions.y
+        for robot in robots:
+            robot.step(grid)
+            horz_robots[robot.pos.y] += 1
+
+        if max(horz_robots) > most_horz_robots:
+            most_horz_robots = max(horz_robots)
+            best_second = s
+        if aoc.args.progress or aoc.args.verbose:
+            render_robots(robots, grid, seconds=s+1)
+
+    print(f"p2: {best_second} {most_horz_robots}")
 
 
 if __name__ == "__main__":
