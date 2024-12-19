@@ -1,6 +1,6 @@
 from GhostyUtils import aoc
 from GhostyUtils.grid import Grid
-from GhostyUtils.vec2 import Vec2, Dir
+from GhostyUtils.vec2 import Vec2
 from GhostyUtils.pathfinding import a_star, reconstruct_path
 from functools import partial
 
