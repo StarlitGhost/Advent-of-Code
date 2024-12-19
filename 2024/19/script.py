@@ -1,32 +1,22 @@
 from GhostyUtils import aoc
 from functools import cache
-import re
 
 
-"""
 @cache
 def validate(design: str, patterns: frozenset[str]) -> bool:
-
     if design in patterns:
-        if aoc.args.verbose or aoc.args.progress:
-            print(f"{design} - found")
         return True
     else:
         # try all splits
         valid = False
-        for i in range(1, len(design)-1):
+        for i in range(1, len(design)):
+            if aoc.args.verbose:
+                print(f" trying {design[:i]}-{design[i:]}")
             valid = validate(design[:i], patterns) and validate(design[i:], patterns)
             if valid:
-                break
-        return valid
+                return True
 
     return False
-    """
-
-
-def validate(design: str, patterns: frozenset[str]) -> bool:
-    pattern = re.compile(r"^(" + r'|'.join(patterns) + r")+$")
-    return re.match(pattern, design)
 
 
 def main():
@@ -43,6 +33,9 @@ def main():
         else:
             if aoc.args.verbose or aoc.args.progress:
                 print(f"0 - {design}")
+
+    if aoc.args.progress:
+        print(f"cache: {validate.cache_info().hits} hits, {validate.cache_info().misses} misses")
 
     print(f"p1: {valid}")
 
