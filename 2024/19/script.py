@@ -3,20 +3,16 @@ from functools import cache
 
 
 @cache
-def validate(design: str, patterns: frozenset[str]) -> bool:
-    if design in patterns:
-        return True
-    else:
-        # try all splits
-        valid = False
-        for i in range(1, len(design)):
-            if aoc.args.verbose:
-                print(f" trying {design[:i]}-{design[i:]}")
-            valid = validate(design[:i], patterns) and validate(design[i:], patterns)
-            if valid:
-                return True
+def validate(design: str, patterns: frozenset[str]) -> int:
+    # if there's nothing left of the design after recursively slicing patterns from it,
+    # we found a valid arrangement. return 1 to count it in our sum of all arrangements
+    if not design:
+        return 1
 
-    return False
+    # try removing all patterns from the start of the design,
+    # then recursively do that for each remaining segment of the design
+    return sum(validate(design[len(pattern):], patterns)
+               for pattern in patterns if design[:len(pattern)] == pattern)
 
 
 def main():
@@ -25,19 +21,23 @@ def main():
     designs = designs.splitlines()
 
     valid = 0
+    total_arrangements = 0
     for design in designs:
-        if validate(design, patterns):
+        arrangements = validate(design, patterns)
+        if arrangements:
             if aoc.args.verbose or aoc.args.progress:
-                print(f"1 - {design}")
+                print(f"1 - {design} - {arrangements}")
             valid += 1
+            total_arrangements += arrangements
         else:
             if aoc.args.verbose or aoc.args.progress:
                 print(f"0 - {design}")
 
-    if aoc.args.progress:
-        print(f"cache: {validate.cache_info().hits} hits, {validate.cache_info().misses} misses")
+    if aoc.args.verbose or aoc.args.progress:
+        print(f"validate() {validate.cache_info()}")
 
     print(f"p1: {valid}")
+    print(f"p2: {total_arrangements}")
 
 
 if __name__ == "__main__":
